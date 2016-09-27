@@ -1,0 +1,23 @@
+{
+  "name": "m3553n93r2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Simon Corompt",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "clear": "0.0.1",
+    "clear-terminal-line": "0.0.1",
+    "clui": "^0.3.1",
+    "figlet": "^1.1.2",
+    "inquirer": "^1.1.3",
+    "log-update": "^1.0.2",
+    "minimist": "^1.2.0",
+    "preferences": "^0.2.1",
+    "socket.io-client": "^1.4.8"
+  }
+}
