@@ -6,12 +6,19 @@ const inquirer = require('inquirer')
 const io = require('socket.io-client')
 const logUpdate = require('log-update')
 const { Spinner } = require('clui')
+const playSound = require('play-sound')
+const notifier = require('node-notifier')
+const path = require('path')
+
 
 class App {
   constructor(serverUrl) {
     this.socket = io(serverUrl)
     this.username = 'An0nYM0u5'
+    this.player = playSound()
+  }
 
+  start() {
     this.printHomeScreen()
     this.connect()
       .then(() => this.printConnectionSuccess())
@@ -93,6 +100,12 @@ class App {
   }
 
   onReceiveMessage({ username, content }) {
+    this.player.play(path.join(__dirname, 'assets', 'media', 'decay.mp3'))
+    notifier.notify({
+      title: `${username} s4y5 :`,
+      message: content,
+      icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png')
+    })
     process.stdout.write("\r\x1b[K")
     console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(content))
   }
@@ -100,3 +113,5 @@ class App {
 }
 
 const app = new App('https://m3553n93r2.herokuapp.com/')
+
+app.start()
