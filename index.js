@@ -67,6 +67,26 @@ class App {
       .then(({ username }) => username)
   }
 
+  listen() {
+    this.socket.on('message', message => this.onReceiveMessage(message))
+  }
+
+  onReceiveMessage({ username, content }) {
+
+    if (!this.state.isMuted) {
+      // this.player.play(path.join(__dirname, 'assets', 'media', 'decay.mp3'))
+      notifier.notify({
+        title: `${username} s4y5 :`,
+        message: content,
+        icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png'),
+        sound: true,
+      })
+    }
+
+    process.stdout.write("\r\x1b[K")
+    console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(content))
+  }
+
   printHomeScreen() {
     clear()
     console.log(
@@ -128,26 +148,6 @@ class App {
       username: this.state.username
     })
     return Promise.resolve()
-  }
-
-  listen() {
-    this.socket.on('message', message => this.onReceiveMessage(message))
-  }
-
-  onReceiveMessage({ username, content }) {
-
-    if (!this.state.isMuted) {
-      // this.player.play(path.join(__dirname, 'assets', 'media', 'decay.mp3'))
-      notifier.notify({
-        title: `${username} s4y5 :`,
-        message: content,
-        icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png'),
-        sound: true,
-      })
-    }
-
-    process.stdout.write("\r\x1b[K")
-    console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(content))
   }
 
 }
