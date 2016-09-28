@@ -136,7 +136,7 @@ class App {
     console.log(
       chalk.white.bold('\n\nWe g0t som3 c0ol comm4nds:\n\n'),
       ...commandsInfo,
-      chalk.white.bold('\n\nEnj0y th1s r3sp0n5ibly... n\n')
+      chalk.white.bold('\n\nEnj0y th1s r3sp0n5ibly... \n\n')
     )
     return wait(500)
   }
