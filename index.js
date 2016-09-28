@@ -1,128 +1,102 @@
-var clear = require('clear')
-var clearLine = require("clear-terminal-line")
-var chalk = require('chalk')
-var figlet = require('figlet')
-var inquirer = require('inquirer')
-var io = require('socket.io-client')
-var logUpdate = require('log-update')
-var clui = require('clui')
-Spinner = clui.Spinner
+const clear = require('clear')
+const clearLine = require("clear-terminal-line")
+const chalk = require('chalk')
+const figlet = require('figlet')
+const inquirer = require('inquirer')
+const io = require('socket.io-client')
+const logUpdate = require('log-update')
+const { Spinner } = require('clui')
 
+class App {
+  constructor(serverUrl) {
+    this.socket = io('https://m3553n93r2.herokuapp.com/')
+    this.username = 'An0nYM0u5'
 
-var socket = {}
-var username = '4N0nyM0u2'
+    this.printHomeScreen()
+    this.connect()
+      .then(() => this.printConnectionSuccess())
+      .then(() => this.login())
+      .then(username => this.username = username)
+      .then(() => this.listen())
+      .then(() => this.printPrompt())
+  }
 
-function init() {
-  launch()
-  connect()
-}
-
-function launch() {
-  clear()
-  console.log(
-    chalk.cyan.dim(
-      figlet.textSync('m3553n93r2', { horizontalLayout: 'full' })
-    )
-  )
-}
-
-function connect() {
-  socket = io('https://m3553n93r2.herokuapp.com/')
-
-  var loading = 100
-  var countdown = new Spinner('Connecting to chat')
-  countdown.start()
-
-  var interval = setInterval(function() {
-    loading--
-
-    if (loading <= 0) {
-      countdown.stop()
-      process.stdout.write('\n')
-      clearInterval(interval)
-      console.log(chalk.cyan('Client successfully connected!'))
-      socket.on('connect', listen())
-    }
-
-  }, 10)
-
-}
-
-function listen() {
-
-  login()
-
-  socket.on('message', messageReceived)
-
-}
-
-function messageReceived(message) {
-  var username = message.username
-  var message = message.content
-  process.stdout.write('\033[' + (username.length + 4).toString() + 'D')
-  console.log(chalk.cyan(`${username}: `) + message)
-}
-
-function promptMessage() {
-
-  var questions = [
-    {
-      name: 'message',
-      type: 'input',
-      message: `${username}:`
-    }
-
-  ]
-
-
-  inquirer
-    .prompt(questions)
-    .then( function(arguments) {
-      message = arguments.message
-      process.stdout.write('\033[' + "1" + 'A')
-      process.stdout.write('\033[' + (username.length + 4).toString() + 'D')
-      process.stdout.write('\033[K')
-      console.log(chalk.cyan(`${username}: `) + message)
-
-      socket.emit('message', {
-        content: message,
-        username: username
+  connect() {
+    return new Promise((resolve, reject) => {
+      this.socket.on('connect', (err) => {
+        if (err) reject()
+        else resolve()
       })
-
-
-      promptMessage()
     })
+  }
 
-
-
-}
-
-function login() {
-
-  var questions = [
-    {
-      name: 'username',
-      type: 'input',
-      message: 'Enter your username:',
-      validate: function(value) {
-        if (value.length < 10) {
-          return true;
-        } else {
-          return 'Way too long...';
+  login() {
+    return inquirer
+      .prompt([
+        {
+          name: 'username',
+          type: 'input',
+          message: 'Enter your username:',
+          validate: function(value) {
+            if (value.length > 10) {
+              return 'Way too long...'
+            } else if (!value) {
+              return 'Pl34ze tYp3 y0ur Uz3rn4Me'
+            } else {
+              return true
+            }
+          }
         }
-      }
-    }
-  ]
+      ])
+      .then(({ username }) => username)
+  }
 
-  inquirer
-    .prompt(questions)
-    .then( function(arguments) {
-      username = arguments.username
-      promptMessage()
+  printHomeScreen() {
+    clear()
+    console.log(
+      chalk.cyan.dim(
+        figlet.textSync('m3553n93r2', { horizontalLayout: 'full' })
+      )
+    )
+    this.spinner = new Spinner('Connecting to chat')
+    this.spinner.start()
+  }
+
+  printConnectionSuccess() {
+    this.spinner.stop()
+    process.stdout.write('\n')
+    console.log(chalk.cyan('Client successfully connected!'))
+    return Promise.resolve()
+  }
+
+  printPrompt() {
+    return inquirer
+      .prompt([{
+        name: 'message',
+        type: 'input',
+        message: `${this.username}:`
+      }])
+      .then(({ message }) => this.emitMessage(message))
+      .then(() => this.printPrompt())
+  }
+
+  emitMessage(message) {
+    this.socket.emit('message', {
+      content: message,
+      username: this.username
     })
+    return Promise.resolve()
+  }
+
+  listen() {
+    this.socket.on('message', message => this.onReceiveMessage(message))
+  }
+
+  onReceiveMessage({ username, content }) {
+    process.stdout.write("\r\x1b[K")
+    console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(content))
+  }
 
 }
 
-
-
-init()
+const app = new App('https://m3553n93r2.herokuapp.com/')
