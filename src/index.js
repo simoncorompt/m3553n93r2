@@ -9,7 +9,7 @@ const { Spinner } = require('clui')
 const playSound = require('play-sound')
 const notifier = require('node-notifier')
 const path = require('path')
-const { has, flatMap } = require('lodash/fp')
+const { has, flatMap, prop } = require('lodash/fp')
 const { wait } = require('./utils/promise')
 const { convertTo1337 } = require('./utils/1337')
 const Cursor = require('terminal-cursor')
@@ -27,7 +27,7 @@ class App {
         description: 'to mute or unmute the notification when a new message is received.'
       },
       '/users': {
-        action: 'displayUsers',
+        action: 'printUserList',
         description: 'to display the list of all connected users.'
       },
       '/1337': {
@@ -71,13 +71,13 @@ class App {
 
   start() {
     this.printHomeScreen()
-    this.connect()
+      .then(() => this.connect())
+      .then(() => this.listen())
       .then(() => this.printConnectionSuccess())
       .then(() => this.login())
       .then(username => this.setState({ username }))
       .then(() => this.joinRoom())
       .then(() => this.printLoginSucess())
-      .then(() => this.listen())
       .then(() => this.printPrompt())
   }
 
@@ -159,6 +159,7 @@ class App {
     )
     this.spinner = new Spinner('Connecting to chat')
     this.spinner.start()
+    return Promise.resolve()
   }
 
   printConnectionSuccess() {
@@ -236,9 +237,11 @@ class App {
     this.setState({ isMuted: !this.state.isMuted })
   }
 
-  displayUsers() {
-    process.stdout.write("\r\x1b[K")
-    console.log(chalk.cyan(`${this.state.userList}`))
+  printUserList() {
+    this.printInfo(
+      chalk.magenta('C0nnect3d H#ckerz :\n'),
+      chalk.cyan(`${this.state.userList.map(({ name }) => `\t${name}\n`).join('')}`)
+    )
   }
 
   emitMessage(message) {
