@@ -12,8 +12,8 @@ const path = require('path')
 const { has, flatMap, prop } = require('lodash/fp')
 const { wait } = require('./utils/promise')
 const { convertTo1337 } = require('./utils/1337')
+const { hasImage, toAscii } = require('./utils/ascii')
 const Cursor = require('terminal-cursor')
-
 
 class App {
   constructor(serverUrl) {
@@ -235,6 +235,7 @@ class App {
     const msg = message.trim()
 
     if (has(msg, this.handlers)) this[this.handlers[msg].action](msg)
+    else if (hasImage(msg)) toAscii(msg).then(converted => this.emitMessage('\n'+converted))
     else this.emitMessage(msg)
 
     return Promise.resolve()
