@@ -150,6 +150,11 @@ class App {
     this.setState({userList: userList})
   }
 
+  printInfo(...info) {
+    process.stdout.write("\r\x1b[K")
+    console.log(...info)
+  }
+
   printHomeScreen() {
     clear()
     console.log(
@@ -199,9 +204,11 @@ class App {
     console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(message))
   }
 
-  printInfo(...info) {
-    process.stdout.write("\r\x1b[K")
-    console.log(...info)
+  printUserList() {
+    this.printInfo(
+      chalk.magenta('C0nnect3d H#ckerz :\n'),
+      chalk.cyan(`${this.state.userList.map(({ name }) => `\t${name}\n`).join('')}`)
+    )
   }
 
   printPrompt() {
@@ -231,17 +238,6 @@ class App {
     else this.emitMessage(msg)
 
     return Promise.resolve()
-  }
-
-  toggleMute() {
-    this.setState({ isMuted: !this.state.isMuted })
-  }
-
-  printUserList() {
-    this.printInfo(
-      chalk.magenta('C0nnect3d H#ckerz :\n'),
-      chalk.cyan(`${this.state.userList.map(({ name }) => `\t${name}\n`).join('')}`)
-    )
   }
 
   emitMessage(message) {
