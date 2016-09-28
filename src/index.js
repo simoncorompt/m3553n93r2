@@ -154,7 +154,8 @@ class App {
     )
 
     console.log(
-      chalk.white.bold('\n\nWe g0t som3 c0ol comm4nds:\n\n'),
+      chalk.magenta(`\n\n\tWelcome H4ck3r ${this.state.username}\n`),
+      chalk.white.bold('\n\nWe g0t som3 c0ol comm4nds th4t you ne3d t0 kn0w:\n\n'),
       ...commandsInfo,
       chalk.white.bold('\n\nEnj0y th1s r3sp0n5ibly... \n\n')
     )
