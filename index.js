@@ -7,8 +7,6 @@ var io = require('socket.io-client')
 var logUpdate = require('log-update')
 var clui = require('clui')
 Spinner = clui.Spinner
-var csi = require("control-sequence-introducer");
-
 
 
 var socket = {}
@@ -21,15 +19,15 @@ function init() {
 
 function launch() {
   clear()
-  // console.log(
-  //   chalk.cyan.dim(
-  //     figlet.textSync('m3553n93r2', { horizontalLayout: 'full' })
-  //   )
-  // )
+  console.log(
+    chalk.cyan.dim(
+      figlet.textSync('m3553n93r2', { horizontalLayout: 'full' })
+    )
+  )
 }
 
 function connect() {
-  socket = io('http://localhost:3000')
+  socket = io('https://m3553n93r2.herokuapp.com/')
 
   var loading = 100
   var countdown = new Spinner('Connecting to chat')
