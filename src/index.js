@@ -11,23 +11,31 @@ const notifier = require('node-notifier')
 const path = require('path')
 const { has, flatMap } = require('lodash/fp')
 const { wait } = require('./utils/promise')
+const { convertTo1337 } = require('./utils/1337')
+const Cursor = require('terminal-cursor')
 
 
 class App {
   constructor(serverUrl) {
     this.socket = io(serverUrl)
     this.player = playSound()
+    this.cursor = new Cursor(1, 1)
 
     this.handlers = {
       '/mute': {
         action: 'toggleMute',
         description: 'to mute or unmute the notification when a new message is received.'
+      },
+      '/1337': {
+        action: 'toggleLeetSpeak',
+        description: 'to toggle the leetSpe4k mode 1!!1!1!'
       }
     }
 
     this.state = {
       username: 'An0nYM0u5',
-      isMuted: false
+      isMuted: false,
+      isLeetSpeak: false,
     }
   }
 
@@ -42,6 +50,19 @@ class App {
       process.stdout.write("\r\x1b[K")
       console.log(chalk.cyan(`m3553n93r2 is now ${nextState.isMuted ? 'muted' : 'unmuted'}.`))
     }
+
+    if (this.state.isLeetSpeak !== nextState.isLeetSpeak) {
+      process.stdout.write("\r\x1b[K")
+      console.log(chalk.cyan(`m3553n93r2 is now in ${nextState.isLeetSpeak ? '1337' : 'normal'} mode.`))
+    }
+  }
+
+  toggleMute() {
+    this.setState({ isMuted: !this.state.isMuted })
+  }
+
+  toggleLeetSpeak() {
+    this.setState({ isLeetSpeak: !this.state.isLeetSpeak })
   }
 
   start() {
@@ -101,8 +122,7 @@ class App {
       })
     }
 
-    process.stdout.write("\r\x1b[K")
-    console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(content))
+    this.printMessage({ username, message: content })
   }
 
   printHomeScreen() {
@@ -141,6 +161,18 @@ class App {
     return wait(500)
   }
 
+  printMessage({ username, message, isMe = false }) {
+    process.stdout.write("\r\x1b[K")
+
+    if (isMe) {
+      // remove the input line
+      this.cursor.move('up', 1)
+      process.stdout.write("\r\x1b[K")
+    }
+
+    console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(message))
+  }
+
   printPrompt() {
     return inquirer
       .prompt([{
@@ -170,15 +202,16 @@ class App {
     return Promise.resolve()
   }
 
-  toggleMute() {
-    this.setState({ isMuted: !this.state.isMuted })
-  }
-
   emitMessage(message) {
+    const msg = this.state.isLeetSpeak ? convertTo1337(message) : message
+
     this.socket.emit('message', {
-      content: message,
+      content: msg,
       username: this.state.username
     })
+
+    this.printMessage({ username: this.state.username, message: msg, isMe: true })
+
     return Promise.resolve()
   }
 

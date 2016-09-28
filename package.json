@@ -21,6 +21,7 @@
     "node-notifier": "^4.6.1",
     "play-sound": "0.0.9",
     "preferences": "^0.2.1",
-    "socket.io-client": "^1.4.8"
+    "socket.io-client": "^1.4.8",
+    "terminal-cursor": "0.0.3"
   }
 }
