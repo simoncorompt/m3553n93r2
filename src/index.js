@@ -22,12 +22,17 @@ class App {
       '/mute': {
         action: 'toggleMute',
         description: 'to mute or unmute the notification when a new message is received.'
+      },
+      '/users': {
+        action: 'displayUsers',
+        description: 'to display the list of all connected users.'
       }
     }
 
     this.state = {
       username: 'An0nYM0u5',
-      isMuted: false
+      isMuted: false,
+      userList: []
     }
   }
 
@@ -50,6 +55,7 @@ class App {
       .then(() => this.printConnectionSuccess())
       .then(() => this.login())
       .then(username => this.setState({ username }))
+      .then(() => this.joinRoom())
       .then(() => this.printLoginSucess())
       .then(() => this.listen())
       .then(() => this.printPrompt())
@@ -62,6 +68,11 @@ class App {
         else resolve()
       })
     })
+  }
+
+  joinRoom() {
+    this.socket.emit('user_join', this.state.username)
+    return Promise.resolve()
   }
 
   login() {
@@ -87,6 +98,9 @@ class App {
 
   listen() {
     this.socket.on('message', message => this.onReceiveMessage(message))
+    this.socket.on('user_join', user => this.onUserJoin(user))
+    this.socket.on('user_leave', user => this.onUserLeave(user))
+    this.socket.on('user_list_update', users => this.onUserListUpdate(users))
   }
 
   onReceiveMessage({ username, content }) {
@@ -103,6 +117,20 @@ class App {
 
     process.stdout.write("\r\x1b[K")
     console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(content))
+  }
+
+  onUserJoin(user) {
+    process.stdout.write("\r\x1b[K")
+    console.log(chalk.green(`${user} has joined the chat.`))
+  }
+
+  onUserLeave(user) {
+    process.stdout.write("\r\x1b[K")
+    console.log(chalk.red(`${user} has left the chat.`))
+  }
+
+  onUserListUpdate(userList) {
+    this.setState({userList: userList})
   }
 
   printHomeScreen() {
@@ -174,6 +202,12 @@ class App {
     this.setState({ isMuted: !this.state.isMuted })
   }
 
+  displayUsers() {
+    console.log(this.state);
+    process.stdout.write("\r\x1b[K")
+    console.log(chalk.cyan(`${this.state.userList}`))
+  }
+
   emitMessage(message) {
     this.socket.emit('message', {
       content: message,
@@ -184,6 +218,6 @@ class App {
 
 }
 
-const app = new App('https://m3553n93r2.herokuapp.com/')
+const app = new App('http://localhost:3000')
 
 app.start()
