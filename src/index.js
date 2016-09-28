@@ -256,6 +256,6 @@ class App {
 
 }
 
-const app = new App('http://localhost:3000')
+const app = new App('https://m3553n93r2.herokuapp.com/')
 
 app.start()
