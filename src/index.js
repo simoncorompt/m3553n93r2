@@ -52,13 +52,12 @@ class App {
 
   stateWillUpdate(nextState) {
     if (this.state.isMuted !== nextState.isMuted) {
-      process.stdout.write("\r\x1b[K")
-      console.log(chalk.cyan(`m3553n93r2 is now ${nextState.isMuted ? 'muted' : 'unmuted'}.`))
+      this.printInfo(`m3553n93r2 is now ${nextState.isMuted ? 'muted' : 'unmuted'}.`)
+
     }
 
     if (this.state.isLeetSpeak !== nextState.isLeetSpeak) {
-      process.stdout.write("\r\x1b[K")
-      console.log(chalk.cyan(`m3553n93r2 is now in ${nextState.isLeetSpeak ? '1337' : 'normal'} mode.`))
+      this.printInfo(`m3553n93r2 is now in ${nextState.isLeetSpeak ? '1337' : 'normal'} mode.`)
     }
   }
 
@@ -202,6 +201,11 @@ class App {
     console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(message))
   }
 
+  printInfo(info) {
+    process.stdout.write("\r\x1b[K")
+    console.log(chalk.cyan(info))
+  }
+
   printPrompt() {
     return inquirer
       .prompt([{
@@ -236,7 +240,6 @@ class App {
   }
 
   displayUsers() {
-    console.log(this.state);
     process.stdout.write("\r\x1b[K")
     console.log(chalk.cyan(`${this.state.userList}`))
   }
