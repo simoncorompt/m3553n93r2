@@ -7,6 +7,7 @@ const leetMap = {
   'g': '9',
   't': '7',
   'i': '1',
+  'o': '0',
 }
 
 const to1337 = char =>
