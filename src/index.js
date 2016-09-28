@@ -52,12 +52,12 @@ class App {
 
   stateWillUpdate(nextState) {
     if (this.state.isMuted !== nextState.isMuted) {
-      this.printInfo(`m3553n93r2 is now ${nextState.isMuted ? 'muted' : 'unmuted'}.`)
+      this.printInfo(chalk.cyan(`m3553n93r2 is now ${nextState.isMuted ? 'muted' : 'unmuted'}.`))
 
     }
 
     if (this.state.isLeetSpeak !== nextState.isLeetSpeak) {
-      this.printInfo(`m3553n93r2 is now in ${nextState.isLeetSpeak ? '1337' : 'normal'} mode.`)
+      this.printInfo(chalk.cyan(`m3553n93r2 is now in ${nextState.isLeetSpeak ? '1337' : 'normal'} mode.`))
     }
   }
 
@@ -139,13 +139,11 @@ class App {
   }
 
   onUserJoin(user) {
-    process.stdout.write("\r\x1b[K")
-    console.log(chalk.green(`${user} has joined the chat.`))
+    this.printInfo(chalk.green(`${user} has joined the chat.`))
   }
 
   onUserLeave(user) {
-    process.stdout.write("\r\x1b[K")
-    console.log(chalk.red(`${user} has left the chat.`))
+    this.printInfo(chalk.red(`${user} has left the chat.`))
   }
 
   onUserListUpdate(userList) {
@@ -165,8 +163,7 @@ class App {
 
   printConnectionSuccess() {
     this.spinner.stop()
-    process.stdout.write('\n')
-    console.log(chalk.cyan('Client successfully connected!'))
+    console.log(chalk.cyan('\nClient successfully connected!'))
     return Promise.resolve()
   }
 
@@ -201,9 +198,9 @@ class App {
     console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(message))
   }
 
-  printInfo(info) {
+  printInfo(...info) {
     process.stdout.write("\r\x1b[K")
-    console.log(chalk.cyan(info))
+    console.log(...info)
   }
 
   printPrompt() {
