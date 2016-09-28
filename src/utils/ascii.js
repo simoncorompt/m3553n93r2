@@ -1,6 +1,6 @@
 const imageToAscii = require("image-to-ascii")
 
-const regex = /^https?:\/\/(?:[a-z\-]+\.)+[a-z]{2,6}(?:\/[^\/#?]+)+\.(?:jpe?g|gif|png)$/
+const regex = /^https?:\/\/(?:[a-z\-\.]+\.)+[a-z]{2,6}(?:\/[^\/#?]+)+\.(?:jpe?g|gif|png)$/
 
 const hasImage = str => regex.test(str)
 

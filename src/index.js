@@ -123,19 +123,19 @@ class App {
     this.socket.on('user_list_update', users => this.onUserListUpdate(users))
   }
 
-  onReceiveMessage({ username, content }) {
+  onReceiveMessage({ username, message }) {
 
     if (!this.state.isMuted) {
       // this.player.play(path.join(__dirname, 'assets', 'media', 'decay.mp3'))
       notifier.notify({
         title: `${username} s4y5 :`,
-        message: content,
+        message,
         icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png'),
         sound: true,
       })
     }
 
-    this.printMessage({ username, message: content })
+    this.printMessage({ username, message })
   }
 
   onUserJoin(user) {
@@ -147,7 +147,7 @@ class App {
   }
 
   onUserListUpdate(userList) {
-    this.setState({userList: userList})
+    this.setState({ userList })
   }
 
   printInfo(...info) {
@@ -235,23 +235,33 @@ class App {
     const msg = message.trim()
 
     if (has(msg, this.handlers)) this[this.handlers[msg].action](msg)
-    else if (hasImage(msg)) toAscii(msg).then(converted => this.emitMessage('\n'+converted))
     else this.emitMessage(msg)
 
     return Promise.resolve()
   }
 
   emitMessage(message) {
-    const msg = this.state.isLeetSpeak ? convertTo1337(message) : message
+    return this.convertMessage(message)
+      .then(message => {
+        this.socket.emit('message', {
+          message,
+          username: this.state.username
+        })
 
-    this.socket.emit('message', {
-      content: msg,
-      username: this.state.username
-    })
+        this.printMessage({
+          username: this.state.username,
+          message,
+          isMe: true
+        })
+      })
+  }
 
-    this.printMessage({ username: this.state.username, message: msg, isMe: true })
+  convertMessage(message) {
+    if (hasImage(message)) return toAscii(message).then(converted => `\n${converted}`)
 
-    return Promise.resolve()
+    else if (this.state.isLeetSpeak) return Promise.resolve(convertTo1337(message))
+
+    return Promise.resolve(message)
   }
 
 }
