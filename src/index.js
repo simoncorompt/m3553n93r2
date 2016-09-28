@@ -126,17 +126,17 @@ class App {
   printLoginSucess() {
     const commandsInfo = flatMap(
       cmd => [
-        chalk.cyan('\t type'),
+        chalk.cyan('\ttype'),
         chalk.white.bold(cmd),
-        chalk.cyan(` ${this.handlers[cmd].description} \n`),
+        chalk.cyan(`${this.handlers[cmd].description}\n`),
       ],
       Object.keys(this.handlers)
     )
 
     console.log(
-      chalk.white.bold('\n\n we g0t som3 c0ol comm4nds: \n\n'),
+      chalk.white.bold('\n\nWe g0t som3 c0ol comm4nds:\n\n'),
       ...commandsInfo,
-      chalk.white.bold('\n\n Enj0y th1s r3sp0n5ibly... \n\n')
+      chalk.white.bold('\n\nEnj0y th1s r3sp0n5ibly... n\n')
     )
     return wait(500)
   }
