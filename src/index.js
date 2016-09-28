@@ -11,12 +11,15 @@ const notifier = require('node-notifier')
 const path = require('path')
 const { has, flatMap } = require('lodash/fp')
 const { wait } = require('./utils/promise')
+const { convertTo1337 } = require('./utils/1337')
+const Cursor = require('terminal-cursor')
 
 
 class App {
   constructor(serverUrl) {
     this.socket = io(serverUrl)
     this.player = playSound()
+    this.cursor = new Cursor(1, 1)
 
     this.handlers = {
       '/mute': {
@@ -26,13 +29,18 @@ class App {
       '/users': {
         action: 'displayUsers',
         description: 'to display the list of all connected users.'
+      },
+      '/1337': {
+        action: 'toggleLeetSpeak',
+        description: 'to toggle the leetSpe4k mode 1!!1!1!'
       }
     }
 
     this.state = {
       username: 'An0nYM0u5',
       isMuted: false,
-      userList: []
+      userList: [],
+      isLeetSpeak: false,
     }
   }
 
@@ -47,6 +55,19 @@ class App {
       process.stdout.write("\r\x1b[K")
       console.log(chalk.cyan(`m3553n93r2 is now ${nextState.isMuted ? 'muted' : 'unmuted'}.`))
     }
+
+    if (this.state.isLeetSpeak !== nextState.isLeetSpeak) {
+      process.stdout.write("\r\x1b[K")
+      console.log(chalk.cyan(`m3553n93r2 is now in ${nextState.isLeetSpeak ? '1337' : 'normal'} mode.`))
+    }
+  }
+
+  toggleMute() {
+    this.setState({ isMuted: !this.state.isMuted })
+  }
+
+  toggleLeetSpeak() {
+    this.setState({ isLeetSpeak: !this.state.isLeetSpeak })
   }
 
   start() {
@@ -115,8 +136,7 @@ class App {
       })
     }
 
-    process.stdout.write("\r\x1b[K")
-    console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(content))
+    this.printMessage({ username, message: content })
   }
 
   onUserJoin(user) {
@@ -162,11 +182,24 @@ class App {
     )
 
     console.log(
-      chalk.white.bold('\n\nWe g0t som3 c0ol comm4nds:\n\n'),
+      chalk.magenta(`\n\n\tWelcome H4ck3r ${this.state.username}\n`),
+      chalk.white.bold('\n\nWe g0t som3 c0ol comm4nds th4t you ne3d t0 kn0w:\n\n'),
       ...commandsInfo,
       chalk.white.bold('\n\nEnj0y th1s r3sp0n5ibly... \n\n')
     )
     return wait(500)
+  }
+
+  printMessage({ username, message, isMe = false }) {
+    process.stdout.write("\r\x1b[K")
+
+    if (isMe) {
+      // remove the input line
+      this.cursor.move('up', 1)
+      process.stdout.write("\r\x1b[K")
+    }
+
+    console.log(chalk.green('?'), chalk.white.bold(`${username}: `) + chalk.cyan(message))
   }
 
   printPrompt() {
@@ -209,10 +242,15 @@ class App {
   }
 
   emitMessage(message) {
+    const msg = this.state.isLeetSpeak ? convertTo1337(message) : message
+
     this.socket.emit('message', {
-      content: message,
+      content: msg,
       username: this.state.username
     })
+
+    this.printMessage({ username: this.state.username, message: msg, isMe: true })
+
     return Promise.resolve()
   }
 
