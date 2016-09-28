@@ -9,13 +9,21 @@ const { Spinner } = require('clui')
 const playSound = require('play-sound')
 const notifier = require('node-notifier')
 const path = require('path')
-const { has } = require('lodash/fp')
+const { has, flatMap } = require('lodash/fp')
+const { wait } = require('./utils/promise')
 
 
 class App {
   constructor(serverUrl) {
     this.socket = io(serverUrl)
     this.player = playSound()
+
+    this.handlers = {
+      '/mute': {
+        action: 'toggleMute',
+        description: 'to mute or unmute the notification when a new message is received.'
+      }
+    }
 
     this.state = {
       username: 'An0nYM0u5',
@@ -24,7 +32,16 @@ class App {
   }
 
   setState(stateAtom) {
-    this.state = Object.assign({}, this.state, stateAtom)
+    const nextState = Object.assign({}, this.state, stateAtom)
+    this.stateWillUpdate(nextState)
+    this.state = nextState
+  }
+
+  stateWillUpdate(nextState) {
+    if (this.state.isMuted !== nextState.isMuted) {
+      process.stdout.write("\r\x1b[K")
+      console.log(chalk.cyan(`m3553n93r2 is now ${nextState.isMuted ? 'muted' : 'unmuted'}.`))
+    }
   }
 
   start() {
@@ -33,6 +50,7 @@ class App {
       .then(() => this.printConnectionSuccess())
       .then(() => this.login())
       .then(username => this.setState({ username }))
+      .then(() => this.printLoginSucess())
       .then(() => this.listen())
       .then(() => this.printPrompt())
   }
@@ -105,6 +123,24 @@ class App {
     return Promise.resolve()
   }
 
+  printLoginSucess() {
+    const commandsInfo = flatMap(
+      cmd => [
+        chalk.cyan('\t type'),
+        chalk.white.bold(cmd),
+        chalk.cyan(` ${this.handlers[cmd].description} \n`),
+      ],
+      Object.keys(this.handlers)
+    )
+
+    console.log(
+      chalk.white.bold('\n\n we g0t som3 c0ol comm4nds: \n\n'),
+      ...commandsInfo,
+      chalk.white.bold('\n\n Enj0y th1s r3sp0n5ibly... \n\n')
+    )
+    return wait(500)
+  }
+
   printPrompt() {
     return inquirer
       .prompt([{
@@ -128,11 +164,7 @@ class App {
   handleMessage(message) {
     const msg = message.trim()
 
-    const handlers = {
-      '/mute': 'toggleMute',
-    }
-
-    if (has(msg, handlers)) this[handlers[msg]](msg)
+    if (has(msg, this.handlers)) this[this.handlers[msg].action](msg)
     else this.emitMessage(msg)
 
     return Promise.resolve()
