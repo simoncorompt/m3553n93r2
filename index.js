@@ -9,7 +9,7 @@ const { Spinner } = require('clui')
 
 class App {
   constructor(serverUrl) {
-    this.socket = io('https://m3553n93r2.herokuapp.com/')
+    this.socket = io(serverUrl)
     this.username = 'An0nYM0u5'
 
     this.printHomeScreen()
