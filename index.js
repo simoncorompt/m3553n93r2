@@ -39,9 +39,9 @@ class App {
           message: 'Enter your username:',
           validate: function(value) {
             if (value.length > 10) {
-              return 'Way too long...'
+              return 'W4y to0 long...'
             } else if (!value) {
-              return 'Pl34ze tYp3 y0ur Uz3rn4Me'
+              return 'Pl34ze tYp3 y0ur Uz3rN4me'
             } else {
               return true
             }
