@@ -1,5 +1,6 @@
 const { flatMap } = require('lodash/fp')
 const { Spinner } = require('clui')
+const inquirer = require('inquirer')
 const Cursor = require('terminal-cursor')
 const chalk = require('chalk')
 const figlet = require('figlet')
@@ -109,6 +110,46 @@ const leetSpeakStatus = isLeetSpeak => log(
   chalk.cyan(`m3553n93r2 is now in ${isLeetSpeak ? '1337' : 'normal'} mode.`)
 )
 
+// loginPrompt : _ -> Promise
+const loginPrompt = () =>
+  inquirer
+    .prompt([
+      {
+        name: 'username',
+        type: 'input',
+        message: 'Enter your username:',
+        validate: value => {
+          if (value.length > 10) {
+            return 'W4y to0 long...'
+          } else if (!value.trim()) {
+            return 'Pl34ze tYp3 y0ur Uz3rN4me'
+          } else {
+            return true
+          }
+        }
+      }
+    ])
+    .then(({ username }) => username.trim())
+
+// messagePrompt : String -> Promise
+const messagePrompt = username =>
+  inquirer
+    .prompt([{
+      name: 'message',
+      type: 'input',
+      message: `${username}:`,
+      validate: value => {
+        if (value.length > 255) {
+          return 'W4y to0 long...'
+        } else if (!value.trim()) {
+          return 'Th1s 1s 4 Mess3ngeR 4pp. TyP3 a F#ck1n\' M3ss4ge.'
+        } else {
+          return true
+        }
+      }
+    }])
+    .then(({ message }) => message.trim())
+
 module.exports = {
   homeScreen,
   connectionSuccess,
@@ -121,4 +162,6 @@ module.exports = {
   userLeft,
   mutedStatus,
   leetSpeakStatus,
+  loginPrompt,
+  messagePrompt,
 }

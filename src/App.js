@@ -1,4 +1,3 @@
-const inquirer = require('inquirer')
 const io = require('socket.io-client')
 const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
@@ -99,43 +98,12 @@ class App extends State {
   }
 
   login() {
-    return inquirer
-      .prompt([
-        {
-          name: 'username',
-          type: 'input',
-          message: 'Enter your username:',
-          validate: value => {
-            if (value.length > 10) {
-              return 'W4y to0 long...'
-            } else if (!value.trim()) {
-              return 'Pl34ze tYp3 y0ur Uz3rN4me'
-            } else {
-              return true
-            }
-          }
-        }
-      ])
-      .then(({ username }) => this.onLogin(username))
+    return Print.loginPrompt()
+      .then(username => this.onLogin(username))
   }
 
   prompt() {
-    return inquirer
-      .prompt([{
-        name: 'message',
-        type: 'input',
-        message: `${this.state.username}:`,
-        validate: value => {
-          if (value.length > 255) {
-            return 'W4y to0 long...'
-          } else if (!value.trim()) {
-            return 'Th1s 1s 4 Mess3ngeR 4pp. TyP3 a F#ck1n\' M3ss4ge.'
-          } else {
-            return true
-          }
-        }
-      }])
-      .then(({ message }) => message.trim())
+    return Print.messagePrompt(this.state.username)
       .then(message => this.onSendNewMessage(message))
       .then(() => this.prompt())
   }
