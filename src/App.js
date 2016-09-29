@@ -135,7 +135,7 @@ class App extends State {
       Audio.say(msg.message, msg.voice)
     }
 
-    Print.message(msg)
+    Print.sayMessage(msg)
   }
 
   onUserJoin(username) {
@@ -212,7 +212,7 @@ class App extends State {
     this.socket.emit('say_message', msg)
 
     Audio.say(msg.message, msg.voice)
-    Print.myMessage(msg)
+    Print.mySayMessage(msg)
   }
 
   emitJoinRoom() {

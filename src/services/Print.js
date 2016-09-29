@@ -67,10 +67,17 @@ const help = commands => {
 }
 
 // message : { username : String, message : String } -> Promise
-const message = ({ username, message, isMe = false }) => log(
+const message = ({ username, message }) => log(
   chalk.green('?'),
   chalk.white.bold(`${username}:`),
   chalk.cyan(message)
+)
+
+// message : { username : String, message : String, voice : String } -> Promise
+const sayMessage = ({ username, message, voice }) => log(
+  chalk.green('?'),
+  chalk.white.bold(`${username}:`),
+  chalk.cyan(`${voice || ''} says "${message}"`)
 )
 
 // myMessage : { username : String, message : String } -> Promise
@@ -79,6 +86,14 @@ const myMessage = (msg) => {
   cursor.move('up', 1)
   process.stdout.write("\r\x1b[K")
   return message(msg)
+}
+
+// mySayMessage : { username : String, message : String, voice : String } -> Promise
+const mySayMessage = (msg) => {
+  // remove the input line
+  cursor.move('up', 1)
+  process.stdout.write("\r\x1b[K")
+  return sayMessage(msg)
 }
 
 // activeUsers : [String] -> Promise
@@ -157,6 +172,8 @@ module.exports = {
   help,
   message,
   myMessage,
+  sayMessage,
+  mySayMessage,
   activeUsers,
   userJoined,
   userLeft,
