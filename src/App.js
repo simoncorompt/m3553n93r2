@@ -203,6 +203,7 @@ class App extends State {
 
     this.socket.emit('message', msg)
 
+    Audio.say(msg.message, msg.voice)
     Print.myMessage(msg)
   }
 
