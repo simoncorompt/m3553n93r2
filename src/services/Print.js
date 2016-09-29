@@ -63,7 +63,7 @@ const help = commands => {
     ...commandsInfo,
     chalk.white.bold('\n\nEnj0y th1s r3sp0n5ibly... \n\n')
   )
-    .then(() => wait(500))
+    .then(() => wait(200))
 }
 
 // message : { username : String, message : String } -> Promise

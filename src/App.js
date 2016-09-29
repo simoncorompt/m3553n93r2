@@ -17,6 +17,12 @@ class App extends State {
 
     this.commands = [
       {
+        name: '/help',
+        description: 'to list all commands available.',
+        test: /^\/help$/,
+        handler: this.onShowHelp.bind(this),
+      },
+      {
         name: '/mute',
         description: 'to mute or unmute the notification when a new message is received.',
         test: /^\/mute$/,
@@ -46,7 +52,7 @@ class App extends State {
       },
       {
         name: '/voices',
-        description: `to list all the voices you can use with /say command`,
+        description: `to list all the voices you can use with /say command.`,
         test: /^\/voices$/,
         handler: this.onListVoices.bind(this),
       },
@@ -73,7 +79,7 @@ class App extends State {
         description: 'l\'Ascii c\'est lourd.',
         test: /^\/lourd$/,
         handler: this.emitMessage.bind(this, emojis.lourd),
-      }
+      },
     ]
 
     this.state = {
@@ -139,20 +145,24 @@ class App extends State {
     this.socket.on('user_list_update', users => this.onUserListUpdate(users))
   }
 
+  onShowHelp() {
+    return Print.help(this.commands)
+  }
+
   onToggleMute() {
-    this.setState({ isMuted: !this.state.isMuted })
+    return this.setState({ isMuted: !this.state.isMuted })
   }
 
   onToggleLeetSpeak() {
-    this.setState({ isLeetSpeak: !this.state.isLeetSpeak })
+    return this.setState({ isLeetSpeak: !this.state.isLeetSpeak })
   }
 
   onListUsers() {
-    Print.activeUsers(this.activeUsers)
+    return Print.activeUsers(this.activeUsers)
   }
 
   onListVoices() {
-    Print.availableVoices(Audio.voices)
+    return Print.availableVoices(Audio.voices)
   }
 
   onReceiveMessage(msg) {
@@ -160,7 +170,7 @@ class App extends State {
       Notification.messageReceived(msg)
     }
 
-    Print.message(msg)
+    return Print.message(msg)
   }
 
   onReceiveSayMessage(msg) {
@@ -169,19 +179,19 @@ class App extends State {
       Audio.say(msg.message, msg.voice)
     }
 
-    Print.sayMessage(msg)
+    return Print.sayMessage(msg)
   }
 
   onUserJoin(username) {
-    Print.userJoined(username)
+    return Print.userJoined(username)
   }
 
   onUserLeave(username) {
-    Print.userLeft(username)
+    return Print.userLeft(username)
   }
 
   onUserListUpdate(userList) {
-    this.setState({ userList })
+    return this.setState({ userList })
   }
 
   onConnect() {
