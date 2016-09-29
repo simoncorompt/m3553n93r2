@@ -43,8 +43,8 @@ class App extends State {
         handler: this.onToggleLeetSpeak.bind(this),
       },
       {
-        name: '/say',
-        description: 'to toggle the leetSpe4k mode 1!!1!1!',
+        name: '/say <voice>',
+        description: 'to toggle the speech synthesizer mode. ',
         test: /^\/say(\s\w+\s?\w+)?$/,
         parse: msg => ({ voice: drop(1, msg.split(' ')).join(' ') }),
         handler: this.onToggleSay.bind(this),
