@@ -109,17 +109,6 @@ const leetSpeakStatus = isLeetSpeak => log(
   chalk.cyan(`m3553n93r2 is now in ${isLeetSpeak ? '1337' : 'normal'} mode.`)
 )
 
-// sayStatus : Boolean -> Promise
-const sayStatus = (isSay, voice) => log(
-  chalk.cyan(`m3553n93r2 is now in ${
-    isSay
-      ? `say mode${
-        isSay && voice ? ` using ${voice} voice.` : '.'
-      }`
-      : 'normal mode.'
-  }`)
-)
-
 module.exports = {
   homeScreen,
   connectionSuccess,
@@ -131,5 +120,4 @@ module.exports = {
   userLeft,
   mutedStatus,
   leetSpeakStatus,
-  sayStatus,
 }

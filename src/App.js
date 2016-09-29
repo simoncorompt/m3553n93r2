@@ -1,6 +1,6 @@
 const inquirer = require('inquirer')
 const io = require('socket.io-client')
-const { has, prop, drop } = require('lodash/fp')
+const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
 const { isImageUrl, toAscii } = require('./utils/ascii')
 
@@ -43,21 +43,22 @@ class App extends State {
         handler: this.onToggleLeetSpeak.bind(this),
       },
       {
-        name: '/say <voice>',
-        description: 'to toggle the speech synthesizer mode. ',
-        test: /^\/say(\s\w+\s?\w+)?$/,
-        parse: msg => ({ voice: drop(1, msg.split(' ')).join(' ') }),
-        handler: this.onToggleSay.bind(this),
+        name: '/say <message> | <voice>',
+        description: 'send a message with in speech synthesizer mode. ',
+        test: /^\/say\s[\w\.\s\|]+$/,
+        parse: msg => ({
+          message: head(msg.replace('/say ', '').split('|')).trim(),
+          voice: (msg.split('|')[1] || '').trim()
+        }),
+        handler: this.emitSayMessage.bind(this),
       },
     ]
 
     this.state = {
       username: '',
-      isMuted: false,
       userList: [],
+      isMuted: false,
       isLeetSpeak: false,
-      isSay: false,
-      sayVoice: undefined,
     }
   }
 
@@ -72,13 +73,6 @@ class App extends State {
 
     if (this.state.isLeetSpeak !== nextState.isLeetSpeak) {
       Print.leetSpeakStatus(nextState.isLeetSpeak)
-    }
-
-    if (
-      this.state.isSay !== nextState.isSay
-      || this.state.sayVoice !== nextState.sayVoice
-    ) {
-      Print.sayStatus(nextState.isSay, nextState.sayVoice)
     }
   }
 
@@ -161,13 +155,6 @@ class App extends State {
     this.setState({ isLeetSpeak: !this.state.isLeetSpeak })
   }
 
-  onToggleSay({ voice }) {
-    this.setState({
-      isSay: !!voice || !this.state.isSay,
-      sayVoice: voice
-    })
-  }
-
   onListUsers() {
     Print.activeUsers(this.activeUsers)
   }
@@ -224,9 +211,7 @@ class App extends State {
   formatMessage(message) {
     return {
       message,
-      username: this.state.username,
-      say: this.state.isSay,
-      voice: this.state.sayVoice,
+      username: this.state.username
     }
   }
 
@@ -240,6 +225,21 @@ class App extends State {
           isMe: true
         }))
       })
+  }
+
+  emitSayMessage({ message, voice }) {
+    const msg = {
+      message,
+      username: this.state.username,
+      say: true,
+      voice,
+    }
+
+    this.socket.emit('message', msg)
+
+    Print.message(Object.assign({}, msg, {
+      isMe: true
+    }))
   }
 
   emitJoinRoom() {
