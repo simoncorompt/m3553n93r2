@@ -65,19 +65,19 @@ const help = commands => {
     .then(() => wait(500))
 }
 
-// message : { username : String, message : String, isMe : Boolean } -> Promise
-const message = ({ username, message, isMe = false }) => {
-  if (isMe) {
-    // remove the input line
-    cursor.move('up', 1)
-    process.stdout.write("\r\x1b[K")
-  }
+// message : { username : String, message : String } -> Promise
+const message = ({ username, message, isMe = false }) => log(
+  chalk.green('?'),
+  chalk.white.bold(`${username}:`),
+  chalk.cyan(message)
+)
 
-  return log(
-    chalk.green('?'),
-    chalk.white.bold(`${username}:`),
-    chalk.cyan(message)
-  )
+// myMessage : { username : String, message : String } -> Promise
+const myMessage = (msg) => {
+  // remove the input line
+  cursor.move('up', 1)
+  process.stdout.write("\r\x1b[K")
+  return message(msg)
 }
 
 // activeUsers : [String] -> Promise
@@ -115,6 +115,7 @@ module.exports = {
   welcome,
   help,
   message,
+  myMessage,
   activeUsers,
   userJoined,
   userLeft,

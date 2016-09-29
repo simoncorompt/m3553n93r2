@@ -221,9 +221,7 @@ class App extends State {
       .then(msg => {
         this.socket.emit('message', msg)
 
-        Print.message(Object.assign({}, msg, {
-          isMe: true
-        }))
+        Print.myMessage(msg)
       })
   }
 
@@ -237,9 +235,7 @@ class App extends State {
 
     this.socket.emit('message', msg)
 
-    Print.message(Object.assign({}, msg, {
-      isMe: true
-    }))
+    Print.myMessage(msg)
   }
 
   emitJoinRoom() {
