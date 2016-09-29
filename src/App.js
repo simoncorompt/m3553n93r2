@@ -53,7 +53,6 @@ class App extends State {
 
     this.state = {
       username: '',
-      isLoggedIn: false,
       isMuted: false,
       userList: [],
       isLeetSpeak: false,
