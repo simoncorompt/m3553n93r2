@@ -24,7 +24,36 @@ const say = (message, voice) => new Promise((resolve, reject) => {
 })
   .catch(err => console.log('Audio.say error :', err))
 
+
+const voices = [
+  'Agnes',
+  'Kathy',
+  'Princess',
+  'Vicki',
+  'Victoria',
+  'Albert',
+  'Alex',
+  'Bruce',
+  'Fred',
+  'Junior',
+  'Ralph',
+  'Bad News',
+  'Bahh',
+  'Bells',
+  'Boing',
+  'Bubbles',
+  'Cellos',
+  'Deranged',
+  'Good News',
+  'Hysterical',
+  'Pipe Organ',
+  'Trinoids',
+  'Whisper',
+  'Zarvox'
+]
+
 module.exports = {
   notification,
-  say
+  say,
+  voices,
 }
