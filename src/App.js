@@ -44,7 +44,7 @@ class App extends State {
       },
       {
         name: '/say <message> | <voice>',
-        description: 'send a message with in speech synthesizer mode. ',
+        description: 'send a message in speech synthesizer mode. ',
         test: /^\/say\s[\w\.\s\|]+$/,
         parse: msg => ({
           message: head(msg.replace('/say ', '').split('|')).trim(),
