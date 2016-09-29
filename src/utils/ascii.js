@@ -21,7 +21,22 @@ const toAscii = str => new Promise((resolve, reject) => {
     console.log('ascii convertion error :', err)
   })
 
+
+const thumbUp = `
+
+          /(|
+         (  :
+        __\\  \\  _____
+      (____)  \`|
+     (____)|   |
+      (____).__|
+       (___)__.|_____
+
+`
+
+
 module.exports = {
   isImageUrl,
-  toAscii
+  toAscii,
+  thumbUp,
 }

@@ -1,7 +1,7 @@
 const io = require('socket.io-client')
 const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
-const { isImageUrl, toAscii } = require('./utils/ascii')
+const { isImageUrl, toAscii, thumbUp } = require('./utils/ascii')
 
 const Print = require('./services/Print')
 const Notification = require('./services/Notification')
@@ -36,13 +36,25 @@ class App extends State {
       },
       {
         name: '/say <message> | <voice>',
-        description: `send a message in speech synthesizer mode.\n\t\tAvailable voices are : ${Audio.voices.join(', ')}`,
+        description: `to send a message in speech synthesizer mode.`,
         test: /^\/say\s[\w\.\s\|]+$/,
         parse: msg => ({
           message: head(msg.replace('/say ', '').split('|')).trim(),
           voice: (msg.split('|')[1] || '').trim()
         }),
         handler: this.emitSayMessage.bind(this),
+      },
+      {
+        name: '/voices',
+        description: `to list all the voices you can use with /say command`,
+        test: /^\/voices$/,
+        handler: this.onListVoices.bind(this),
+      },
+      {
+        name: '/+1',
+        description: 'to print a beautiful ASCII thumb up!',
+        test: /^\/\+1$/,
+        handler: this.emitThumbUp.bind(this),
       },
     ]
 
@@ -121,6 +133,10 @@ class App extends State {
     Print.activeUsers(this.activeUsers)
   }
 
+  onListVoices() {
+    Print.availableVoices(Audio.voices)
+  }
+
   onReceiveMessage(msg) {
     if (!this.state.isMuted) {
       Notification.messageReceived(msg)
@@ -197,7 +213,6 @@ class App extends State {
       .then(msg => this.formatMessage(msg))
       .then(msg => {
         this.socket.emit('message', msg)
-
         Print.myMessage(msg)
       })
   }
@@ -210,9 +225,18 @@ class App extends State {
     }
 
     this.socket.emit('say_message', msg)
-
     Audio.say(msg.message, msg.voice)
     Print.mySayMessage(msg)
+  }
+
+  emitThumbUp() {
+    const msg = {
+      message: thumbUp,
+      username: this.state.username,
+    }
+
+    this.socket.emit('message', msg)
+    Print.myMessage(msg)
   }
 
   emitJoinRoom() {

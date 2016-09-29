@@ -105,6 +105,15 @@ const activeUsers = activeUsers => log(
   ))
 )
 
+// availableVoices :: [String] -> Promise
+const availableVoices = voices => log(
+  chalk.magenta('\nH3re 4re tH3 v01cez U c4n u5e :\n'),
+  chalk.cyan(voices.reduce(
+    (acc, voice) => `${acc}\t- ${voice}\n`,
+    ''
+  ))
+)
+
 // userJoined : String -> Promise
 const userJoined = username => log(
   chalk.green(`${username} has joined the chat.`)
@@ -175,6 +184,7 @@ module.exports = {
   sayMessage,
   mySayMessage,
   activeUsers,
+  availableVoices,
   userJoined,
   userLeft,
   mutedStatus,
