@@ -103,6 +103,7 @@ class App extends State {
 
   listen() {
     this.socket.on('message', message => this.onReceiveMessage(message))
+    this.socket.on('say_message', message => this.onReceiveSayMessage(message))
     this.socket.on('user_join', user => this.onUserJoin(user))
     this.socket.on('user_leave', user => this.onUserLeave(user))
     this.socket.on('user_list_update', users => this.onUserListUpdate(users))
@@ -123,7 +124,15 @@ class App extends State {
   onReceiveMessage(msg) {
     if (!this.state.isMuted) {
       Notification.messageReceived(msg)
-      if (msg.say) Audio.say(msg.message, msg.voice)
+    }
+
+    Print.message(msg)
+  }
+
+  onReceiveSayMessage(msg) {
+    if (!this.state.isMuted) {
+      Notification.messageReceived(msg)
+      Audio.say(msg.message, msg.voice)
     }
 
     Print.message(msg)
@@ -197,11 +206,10 @@ class App extends State {
     const msg = {
       message,
       username: this.state.username,
-      say: true,
       voice,
     }
 
-    this.socket.emit('message', msg)
+    this.socket.emit('say_message', msg)
 
     Audio.say(msg.message, msg.voice)
     Print.myMessage(msg)
