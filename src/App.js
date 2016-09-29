@@ -1,7 +1,7 @@
 const io = require('socket.io-client')
 const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
-const { isImageUrl, toAscii, thumbUp } = require('./utils/ascii')
+const { isImageUrl, toAscii, emojis } = require('./utils/ascii')
 
 const Print = require('./services/Print')
 const Notification = require('./services/Notification')
@@ -54,8 +54,26 @@ class App extends State {
         name: '/+1',
         description: 'to print a beautiful ASCII thumb up!',
         test: /^\/\+1$/,
-        handler: this.emitThumbUp.bind(this),
+        handler: this.emitMessage.bind(this, emojis.thumbUp),
       },
+      {
+        name: '/lollypop',
+        description: 'to print an amazing ASCII lollypop!!',
+        test: /^\/lollypop$/,
+        handler: this.emitMessage.bind(this, emojis.lollypop),
+      },
+      {
+        name: '/rock',
+        description: 'to print an incredible ASCII metalish rock image!!',
+        test: /^\/rock$/,
+        handler: this.emitMessage.bind(this, emojis.rock),
+      },
+      {
+        name: '/lourd',
+        description: 'l\'Ascii c\'est lourd.',
+        test: /^\/lourd$/,
+        handler: this.emitMessage.bind(this, emojis.lourd),
+      }
     ]
 
     this.state = {
@@ -227,16 +245,6 @@ class App extends State {
     this.socket.emit('say_message', msg)
     Audio.say(msg.message, msg.voice)
     Print.mySayMessage(msg)
-  }
-
-  emitThumbUp() {
-    const msg = {
-      message: thumbUp,
-      username: this.state.username,
-    }
-
-    this.socket.emit('message', msg)
-    Print.myMessage(msg)
   }
 
   emitJoinRoom() {
