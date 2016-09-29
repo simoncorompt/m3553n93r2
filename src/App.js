@@ -9,13 +9,6 @@ const Audio = require('./services/Audio')
 
 const State = require('./State')
 
-const getHandler = (commands, message) =>
-  commands.reduce((acc, { test, name, parse = (x => x), handler }) =>
-    !!acc || !message.match(test)
-      ? acc
-      : msg => handler(parse(msg))
-  , false)
-
 class App extends State {
   constructor(serverUrl) {
     super()
@@ -161,7 +154,14 @@ class App extends State {
   }
 
   onSendNewMessage(message) {
-    const handler = getHandler(this.commands, message)
+    const handler =
+      this.commands
+        .reduce((acc, { test, name, parse = (x => x), handler }) =>
+          !!acc || !message.match(test)
+            ? acc
+            : msg => handler(parse(msg))
+        , false)
+
     if (handler) return Promise.resolve(handler(message))
     return this.emitMessage(message)
   }
