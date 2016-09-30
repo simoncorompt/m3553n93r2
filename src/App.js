@@ -1,7 +1,8 @@
 const io = require('socket.io-client')
 const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
-const { isImageUrl, toAscii, emojis } = require('./utils/ascii')
+const { toAscii, emojis } = require('./utils/ascii')
+const { isImageUrl } = require('./utils/url')
 
 const Print = require('./services/Print')
 const Notification = require('./services/Notification')
