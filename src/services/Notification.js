@@ -25,7 +25,7 @@ const notifyMessage = ({ username, message }) => notify({
 
 const notifyLink = ({ username, message }) => notify({
   title: `${username} s3n7 a l1nk :`,
-  message: `Cl1ck th3 not1fic4tion t0 0pen it.\n${extractUrl(message)}`,
+  message: `Cl1ck here t0 0pen it.\n${extractUrl(message)}`,
   icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png'),
   time: 7000,
   wait: true,
