@@ -44,7 +44,7 @@ class App extends State {
       {
         name: '/say <message> | <voice>',
         description: `to send a message in speech synthesizer mode.`,
-        test: /^\/say\s[\w\.\s\|]+$/,
+        test: /^\/say\s[\w\.\s\|\']+$/,
         parse: msg => ({
           message: head(msg.replace('/say ', '').split('|')).trim(),
           voice: (msg.split('|')[1] || '').trim()
@@ -53,7 +53,7 @@ class App extends State {
       },
       {
         name: '/voices',
-        description: `to list all the voices you can use with /say command.`,
+        description: `to list all the voices available with /say command.`,
         test: /^\/voices$/,
         handler: this.onListVoices.bind(this),
       },
@@ -255,7 +255,7 @@ class App extends State {
 
     this.socket.emit('say_message', msg)
     Audio.say(msg.message, msg.voice)
-    Print.mySayMessage(msg)
+    return Print.mySayMessage(msg)
   }
 
   emitJoinRoom() {
