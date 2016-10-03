@@ -15,6 +15,7 @@ const notify = options => new Promise((resolve, reject) => {
     else resolve(response)
   })
 })
+  .catch(err => console.error('notification error', err))
 
 
 const notifyMessage = ({ username, message }) => notify({
@@ -27,7 +28,7 @@ const notifyLink = ({ username, message }) => notify({
   title: `${username} s3n7 a l1nk :`,
   message: `Cl1ck th3 not1fic4tion t0 0pen it.\n${extractUrl(message)}`,
   icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png'),
-  time: 7000,
+  time: 30000,
   wait: true,
 })
 
@@ -37,10 +38,23 @@ const messageReceived = ({ username, message }) => {
       ? notifyLink({ username, message })
       : notifyMessage({ username, message })
   )
-    .catch(err => console.error('notification error', err))
 }
+
+const userJoined = username => notify({
+  title: `${username} Joined the Ch4t`,
+  message: 'c0me say h3ll0.',
+  icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png'),
+})
+
+const userLeft = username => notify({
+  title: `${username} Left the Ch4t`,
+  message: 't0o b4d.',
+  icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png'),
+})
 
 
 module.exports = {
-  messageReceived
+  messageReceived,
+  userJoined,
+  userLeft,
 }

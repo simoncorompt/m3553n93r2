@@ -184,10 +184,12 @@ class App extends State {
   }
 
   onUserJoin(username) {
+    Notification.userJoined(username)
     return Print.userJoined(username)
   }
 
   onUserLeave(username) {
+    Notification.userLeft(username)
     return Print.userLeft(username)
   }
 
