@@ -1,4 +1,5 @@
 const imageToAscii = require("image-to-ascii")
+const emojis = require('../assets/data/emojis.json')
 
 const toAscii = str => new Promise((resolve, reject) => {
   imageToAscii(str, {
@@ -17,6 +18,8 @@ const toAscii = str => new Promise((resolve, reject) => {
     console.log('ascii convertion error :', err)
   })
 
+
+const parseEmojis = str => str.split(' ').map(x => emojis[x] || x).join(' ')
 
 const thumbUp = `
 
@@ -117,7 +120,8 @@ const lourd = `
 
 module.exports = {
   toAscii,
-  emojis: {
+  parseEmojis,
+  asciiImage: {
     thumbUp,
     lollypop,
     rock,

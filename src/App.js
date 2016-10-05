@@ -1,8 +1,9 @@
 const io = require('socket.io-client')
 const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
-const { toAscii, emojis } = require('./utils/ascii')
+const { toAscii, asciiImage, parseEmojis } = require('./utils/ascii')
 const { isImageUrl } = require('./utils/url')
+const emojis = require('./assets/data/emojis.json')
 
 const Print = require('./services/Print')
 const Notification = require('./services/Notification')
@@ -58,29 +59,35 @@ class App extends State {
         handler: this.onListVoices.bind(this),
       },
       {
+        name: '/emojis',
+        description: 'list all ascii emojis available.',
+        test: /^\/emojis$/,
+        handler: this.onListEmojis.bind(this),
+      },
+      {
         name: '/+1',
         description: 'to print a beautiful ASCII thumb up!',
         test: /^\/\+1$/,
-        handler: this.emitMessage.bind(this, emojis.thumbUp),
+        handler: this.emitMessage.bind(this, asciiImage.thumbUp),
       },
       {
         name: '/lollypop',
         description: 'to print an amazing ASCII lollypop!!',
         test: /^\/lollypop$/,
-        handler: this.emitMessage.bind(this, emojis.lollypop),
+        handler: this.emitMessage.bind(this, asciiImage.lollypop),
       },
       {
         name: '/rock',
         description: 'to print an incredible ASCII metalish rock image!!',
         test: /^\/rock$/,
-        handler: this.emitMessage.bind(this, emojis.rock),
+        handler: this.emitMessage.bind(this, asciiImage.rock),
       },
       {
         name: '/lourd',
         description: 'l\'Ascii c\'est lourd.',
         test: /^\/lourd$/,
-        handler: this.emitMessage.bind(this, emojis.lourd),
-      },
+        handler: this.emitMessage.bind(this, asciiImage.lourd),
+      }
     ]
 
     this.state = {
@@ -166,6 +173,10 @@ class App extends State {
     return Print.availableVoices(Audio.voices)
   }
 
+  onListEmojis() {
+    return Print.availableEmojis(emojis)
+  }
+
   onReceiveMessage(msg) {
     if (!this.state.isMuted) {
       Notification.messageReceived(msg)
@@ -229,7 +240,7 @@ class App extends State {
       return Promise.resolve(convertTo1337(message))
     }
 
-    return Promise.resolve(message)
+    return Promise.resolve(parseEmojis(message))
   }
 
   formatMessage(message) {

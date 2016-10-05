@@ -53,7 +53,7 @@ const help = commands => {
     ({ name, description }) => [
       chalk.cyan('\ttype'),
       chalk.white.bold(name),
-      chalk.cyan(`${description}\n`),
+      chalk.cyan(`${description}\n\n`),
     ],
     commands
   )
@@ -112,6 +112,16 @@ const availableVoices = voices => log(
     (acc, voice) => `${acc}\t- ${voice}\n`,
     ''
   ))
+)
+
+// availableVoices :: [String] -> Promise
+const availableEmojis = emojis => log(
+  chalk.magenta('\nH3re 4re tH3 3m0jis U c4n u5e :\n'),
+  chalk.cyan(Object.keys(emojis).reduce(
+    (acc, emoji) => `${acc}\t- ${emoji}\n`,
+    ''
+  )),
+  chalk.magenta('\nTh1s is a f#kin lo7 0f em0j1s.\n')
 )
 
 // userJoined : String -> Promise
@@ -185,6 +195,7 @@ module.exports = {
   mySayMessage,
   activeUsers,
   availableVoices,
+  availableEmojis,
   userJoined,
   userLeft,
   mutedStatus,
