@@ -33,7 +33,7 @@ class App extends State {
       {
         name: '/users',
         description: 'to display the list of all connected users.',
-        test: /^\/users$/,
+        test: /^\/users?$/,
         handler: this.onListUsers.bind(this),
       },
       {
@@ -55,13 +55,13 @@ class App extends State {
       {
         name: '/voices',
         description: `to list all the voices available with /say command.`,
-        test: /^\/voices$/,
+        test: /^\/voices?$/,
         handler: this.onListVoices.bind(this),
       },
       {
         name: '/emojis',
         description: 'list all ascii emojis available.',
-        test: /^\/emojis$/,
+        test: /^\/emojis?$/,
         handler: this.onListEmojis.bind(this),
       },
       {
