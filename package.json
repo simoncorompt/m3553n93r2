@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node src/index.js"
   },
-  "author": "Simon Corompt",
+  "bin": {
+    "ch4t": "./src/index.js"
+  },
+  "author": "Simon Corompt, Gabriel Vergnaud",
   "license": "ISC",
   "dependencies": {
     "chalk": "^1.1.3",
