@@ -92,7 +92,7 @@ class App extends State {
       {
         name: '/big <message>',
         description: 'to print a BIG ascii text. Must be under 30 character, though.',
-        test: /^\/big\s[\w\s]{1,30}$/,
+        test: /^\/big\s.{1,30}$/,
         parse: msg => msg.replace('/big ', ''),
         handler: this.emitBigMessage.bind(this),
       }
