@@ -38,3 +38,5 @@ jspm_packages
 <<<<<<< HEAD
 
 .DS_Store
+files/*
+!files/.gitkeep

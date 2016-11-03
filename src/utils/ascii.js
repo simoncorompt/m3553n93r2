@@ -1,22 +1,26 @@
-const imageToAscii = require("image-to-ascii")
+const fs = require('fs')
+const path = require('path')
+const request = require('request')
+const imageToAscii = require('asciify-image')
 const emojis = require('../assets/data/emojis.json')
+const { isImageUrl, extractImageFullName } = require('./url')
 
-const toAscii = str => new Promise((resolve, reject) => {
-  imageToAscii(str, {
-      colored: true,
-      size: {
-        height: 30,
-      }
-  }, (err, converted) => {
-    if (err)
-      reject(err)
-    else
-      resolve(converted)
+const downloadImage = url => new Promise((resolve, reject) => {
+  if (!isImageUrl(url)) return reject(new Error('dowloadImage error : not a valid image url'))
+
+  const imageName = extractImageFullName(url)
+  const filePath = path.resolve('files', imageName)
+
+  request(url).pipe(fs.createWriteStream(filePath)).on('close', err => {
+    if (err) return reject(err)
+    resolve(filePath)
   })
 })
-  .catch(err => {
-    console.log('ascii convertion error :', err)
-  })
+
+const toAscii = url =>
+  downloadImage(url)
+    .then(filePath => imageToAscii(filePath, { fit: 'box', height: 30 }))
+    .catch(err => console.log('ascii convertion error :', err))
 
 
 const parseEmojis = str => str.split(' ').map(x => emojis[x] || x).join(' ')
