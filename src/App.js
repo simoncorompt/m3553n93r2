@@ -1,7 +1,7 @@
 const io = require('socket.io-client')
 const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
-const { toAscii, asciiImage, parseEmojis } = require('./utils/ascii')
+const { urlToAscii, asciiImage, getRandomAsciiCat, parseEmojis } = require('./utils/ascii')
 const { isImageUrl } = require('./utils/url')
 const emojis = require('./assets/data/emojis.json')
 
@@ -87,6 +87,12 @@ class App extends State {
         description: 'l\'Ascii c\'est lourd.',
         test: /^\/lourd$/,
         handler: this.emitMessage.bind(this, asciiImage.lourd),
+      },
+      {
+        name: '/cat',
+        description: 'to show a random cat from the internet.',
+        test: /^\/cat$/,
+        handler: this.emitCatImage.bind(this)
       }
     ]
 
@@ -235,7 +241,7 @@ class App extends State {
 
   convertMessage(message) {
     if (isImageUrl(message)) {
-      return toAscii(message).then(converted => `\n${converted}`)
+      return urlToAscii(message).then(converted => `\n${converted}`)
     } else if (this.state.isLeetSpeak) {
       return Promise.resolve(convertTo1337(message))
     }
@@ -269,6 +275,11 @@ class App extends State {
     this.socket.emit('say_message', msg)
     Audio.say(msg.message, msg.voice)
     return Print.mySayMessage(msg)
+  }
+
+  emitCatImage() {
+    return getRandomAsciiCat()
+      .then(msg => this.emitMessage(msg))
   }
 
   emitJoinRoom() {
