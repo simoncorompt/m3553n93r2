@@ -1,4 +1,5 @@
 const io = require('socket.io-client')
+const figlet = require('figlet')
 const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
 const { toAscii, asciiImage, parseEmojis } = require('./utils/ascii')
@@ -87,6 +88,13 @@ class App extends State {
         description: 'l\'Ascii c\'est lourd.',
         test: /^\/lourd$/,
         handler: this.emitMessage.bind(this, asciiImage.lourd),
+      },
+      {
+        name: '/big <message>',
+        description: 'to print a BIG ascii text. Must be under 30 character, though.',
+        test: /^\/big\s[\w\s]{1,30}$/,
+        parse: msg => msg.replace('/big ', ''),
+        handler: this.emitBigMessage.bind(this),
       }
     ]
 
@@ -269,6 +277,10 @@ class App extends State {
     this.socket.emit('say_message', msg)
     Audio.say(msg.message, msg.voice)
     return Print.mySayMessage(msg)
+  }
+
+  emitBigMessage(message) {
+    return this.emitMessage(`\n${figlet.textSync(message, { horizontalLayout: 'full' })}`)
   }
 
   emitJoinRoom() {
