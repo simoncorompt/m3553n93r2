@@ -9,7 +9,7 @@ const downloadImage = url => new Promise((resolve, reject) => {
   if (!isImageUrl(url)) return reject(new Error('dowloadImage error : not a valid image url'))
 
   const imageName = extractImageFullName(url)
-  const filePath = path.resolve('files', imageName)
+  const filePath = path.resolve(__dirname, '..', '..', 'files', imageName)
 
   request(url).pipe(fs.createWriteStream(filePath)).on('close', err => {
     if (err) return reject(err)
@@ -19,7 +19,7 @@ const downloadImage = url => new Promise((resolve, reject) => {
 
 const toAscii = url =>
   downloadImage(url)
-    .then(filePath => imageToAscii(filePath, { fit: 'box', height: 30 }))
+    .then(filePath => imageToAscii(filePath, { fit: 'box', height: 40 }))
     .catch(err => console.log('ascii convertion error :', err))
 
 
