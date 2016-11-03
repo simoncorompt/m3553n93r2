@@ -4,13 +4,16 @@ const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
 const { toAscii, asciiImage, parseEmojis } = require('./utils/ascii')
 const { isImageUrl } = require('./utils/url')
+const { noOp } = require('./utils/misc')
 const emojis = require('./assets/data/emojis.json')
-
 const Print = require('./services/Print')
 const Notification = require('./services/Notification')
 const Audio = require('./services/Audio')
-
 const State = require('./State')
+
+
+const isDev = process.env.NODE_ENV === 'development'
+
 
 class App extends State {
   constructor(serverUrl) {
@@ -95,7 +98,14 @@ class App extends State {
         test: /^\/big\s.{1,30}$/,
         parse: msg => msg.replace('/big ', ''),
         handler: this.emitBigMessage.bind(this),
-      }
+      },
+      {
+        name: '/img <url>',
+        description: 'to print an ascii converted image. if your url ends in jpg, png or gif you can directly past it ;)',
+        test: /^\/img\s.{1,255}$/,
+        parse: msg => msg.replace('/img ', ''),
+        handler: this.emitImageMessage.bind(this),
+      },
     ]
 
     this.state = {
@@ -281,6 +291,17 @@ class App extends State {
 
   emitBigMessage(message) {
     return this.emitMessage(`\n${figlet.textSync(message, { horizontalLayout: 'full' })}`)
+  }
+
+  emitImageMessage(url) {
+    return toAscii(url)
+      .then(converted => `\n${converted}`)
+      .then(msg => this.emitMessage(msg))
+      .catch(
+        isDev
+          ? err => console.log('emitMessage error :', err)
+          : noOp
+      )
   }
 
   emitJoinRoom() {
