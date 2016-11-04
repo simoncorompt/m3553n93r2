@@ -1,15 +1,18 @@
 {
-  "name": "m3553n93r2",
+  "name": "ch4t",
   "version": "1.0.0",
-  "description": "",
+  "description": "Back to being an hacker from the 90s...",
   "main": "src/index.js",
   "scripts": {
-    "clean": "rimraf files && mkdir files && touch files/.gitkeep",
-    "start": "npm run clean && npm run dev",
-    "dev": "NODE_ENV=development node src/index.js"
+    "clean": "rimraf dist && rimraf files && mkdir files && touch files/.gitkeep",
+    "start": "npm run dev",
+    "dev": "NODE_ENV=development node src/index.js",
+    "build:webpack": "NODE_ENV=production webpack --config webpack.config.js",
+    "shebang": "echo \"#!/usr/bin/env node --harmony\n$(cat ./dist/bundle.js)\" > ./dist/bundle.js",
+    "build": "npm run clean && npm run build:webpack && npm run shebang"
   },
   "bin": {
-    "ch4t": "./src/index.js"
+    "ch4t": "./dist/bundle.js"
   },
   "author": "Simon Corompt, Gabriel Vergnaud",
   "license": "ISC",
@@ -24,13 +27,23 @@
     "node-notifier": "^4.6.1",
     "open": "0.0.5",
     "play-sound": "0.0.9",
-    "preferences": "^0.2.1",
     "request": "^2.76.0",
     "say": "^0.10.0",
     "socket.io-client": "^1.4.8",
     "terminal-cursor": "0.0.3"
   },
   "devDependencies": {
-    "rimraf": "^2.5.4"
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "json-loader": "^0.5.4",
+    "rimraf": "^2.5.4",
+    "shebang-loader": "^0.0.1",
+    "webpack": "^1.13.3",
+    "webpack-node-externals": "^1.5.4"
+  },
+  "repository": {
+    "url": "https://github.com/simoncorompt/m3553n93r2.git",
+    "type": "git"
   }
 }

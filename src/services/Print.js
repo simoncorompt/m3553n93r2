@@ -29,7 +29,7 @@ const homeScreen = () => {
   clear()
   return log(
     chalk.cyan.dim(
-      figlet.textSync('m3553n93r2', { horizontalLayout: 'full' })
+      figlet.textSync('H#cker Ch4t', { horizontalLayout: 'full' })
     )
   )
     .then(() => connectingSpinner.start())

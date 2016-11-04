@@ -25,8 +25,8 @@ const downloadImage = url => new Promise((resolve, reject) => {
 
 const toAscii = url =>
   fileExists(url)
-  .then(f => f, downloadImage)
-  .then(filePath => imageToAscii(filePath, { fit: 'box', height: 40 }))
+    .then(f => f, downloadImage)
+    .then(filePath => imageToAscii(filePath, { fit: 'box', height: 40 }))
 
 const parseEmojis = str => str.split(' ').map(x => emojis[x] || x).join(' ')
 
