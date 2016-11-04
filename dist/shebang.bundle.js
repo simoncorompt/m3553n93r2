@@ -1,3 +1,4 @@
+#!/usr/bin/env node --harmony
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
