@@ -91,17 +91,17 @@
 	var _require4 = __webpack_require__(13),
 	    isImageUrl = _require4.isImageUrl;
 
-	var _require5 = __webpack_require__(14),
+	var _require5 = __webpack_require__(15),
 	    wait = _require5.wait;
 
-	var _require6 = __webpack_require__(15),
+	var _require6 = __webpack_require__(16),
 	    noOp = _require6.noOp;
 
 	var emojis = __webpack_require__(12);
-	var Print = __webpack_require__(16);
-	var Notification = __webpack_require__(22);
-	var Audio = __webpack_require__(25);
-	var State = __webpack_require__(28);
+	var Print = __webpack_require__(17);
+	var Notification = __webpack_require__(23);
+	var Audio = __webpack_require__(26);
+	var State = __webpack_require__(29);
 
 	var isDev = process.env.NODE_ENV === 'development';
 
@@ -187,7 +187,7 @@
 	    }, {
 	      name: '/up',
 	      description: 'to print an ASCII finger emoji pointing up.',
-	      test: /^\/lourd$/,
+	      test: /^\/up$/,
 	      handler: _this.emitMessage.bind(_this, asciiImage.lourd)
 	    }, {
 	      name: '/big <message>',
@@ -590,7 +590,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
+	'use strict';
 
 	var fs = __webpack_require__(8);
 	var path = __webpack_require__(9);
@@ -601,6 +601,10 @@
 	var _require = __webpack_require__(13),
 	    isImageUrl = _require.isImageUrl,
 	    extractImageFullName = _require.extractImageFullName;
+
+	var _require2 = __webpack_require__(14),
+	    downloadsFolderPath = _require2.downloadsFolderPath,
+	    createDownloadFolderIfDoesntExist = _require2.createDownloadFolderIfDoesntExist;
 
 	var fileExists = function fileExists(filePath) {
 	  return new Promise(function (resolve, reject) {
@@ -614,8 +618,10 @@
 	  return new Promise(function (resolve, reject) {
 	    if (!isImageUrl(url)) return reject(new Error('dowloadImage error : not a valid image url'));
 
+	    createDownloadFolderIfDoesntExist();
+
 	    var imageName = extractImageFullName(url);
-	    var filePath = path.resolve(__dirname, '..', '..', 'files', imageName);
+	    var filePath = path.join(downloadsFolderPath, imageName);
 
 	    request(url).pipe(fs.createWriteStream(filePath)).on('close', function (err) {
 	      if (err) return reject(err);
@@ -656,7 +662,6 @@
 	    lourd: lourd
 	  }
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
 /* 8 */
@@ -1073,6 +1078,27 @@
 
 /***/ },
 /* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var fs = __webpack_require__(8);
+	var path = __webpack_require__(9);
+
+	var downloadsFolderPath = path.join(process.env.HOME, 'Downloads', 'ch4t');
+
+	var createDownloadFolderIfDoesntExist = function createDownloadFolderIfDoesntExist() {
+	  var exists = fs.existsSync(downloadsFolderPath);
+	  if (!exists) fs.mkdirSync(downloadsFolderPath);
+	};
+
+	module.exports = {
+	  downloadsFolderPath: downloadsFolderPath,
+	  createDownloadFolderIfDoesntExist: createDownloadFolderIfDoesntExist
+	};
+
+/***/ },
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1088,7 +1114,7 @@
 	};
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1096,7 +1122,7 @@
 	module.exports.noOp = function () {};
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1106,16 +1132,16 @@
 	var _require = __webpack_require__(5),
 	    flatMap = _require.flatMap;
 
-	var _require2 = __webpack_require__(17),
+	var _require2 = __webpack_require__(18),
 	    Spinner = _require2.Spinner;
 
-	var inquirer = __webpack_require__(18);
-	var Cursor = __webpack_require__(19);
-	var chalk = __webpack_require__(20);
+	var inquirer = __webpack_require__(19);
+	var Cursor = __webpack_require__(20);
+	var chalk = __webpack_require__(21);
 	var figlet = __webpack_require__(4);
-	var clear = __webpack_require__(21);
+	var clear = __webpack_require__(22);
 
-	var _require3 = __webpack_require__(14),
+	var _require3 = __webpack_require__(15),
 	    wait = _require3.wait;
 
 	/* ----------------------------------------- *
@@ -1370,44 +1396,44 @@
 	};
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports = require("clui");
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	module.exports = require("inquirer");
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	module.exports = require("terminal-cursor");
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	module.exports = require("chalk");
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	module.exports = require("clear");
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var notifier = __webpack_require__(23);
+	var notifier = __webpack_require__(24);
 	var path = __webpack_require__(9);
-	var open = __webpack_require__(24);
+	var open = __webpack_require__(25);
 
 	var _require = __webpack_require__(13),
 	    containsUrl = _require.containsUrl,
@@ -1482,25 +1508,25 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	module.exports = require("node-notifier");
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = require("open");
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var Player = __webpack_require__(26);
-	var Say = __webpack_require__(27);
+	var Player = __webpack_require__(27);
+	var Say = __webpack_require__(28);
 
 	/* ----------------------------------------- *
 	        Private
@@ -1539,19 +1565,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	module.exports = require("play-sound");
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = require("say");
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
