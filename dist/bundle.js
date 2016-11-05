@@ -92,10 +92,13 @@
 	    isImageUrl = _require4.isImageUrl;
 
 	var _require5 = __webpack_require__(14),
-	    noOp = _require5.noOp;
+	    wait = _require5.wait;
+
+	var _require6 = __webpack_require__(15),
+	    noOp = _require6.noOp;
 
 	var emojis = __webpack_require__(12);
-	var Print = __webpack_require__(15);
+	var Print = __webpack_require__(16);
 	var Notification = __webpack_require__(22);
 	var Audio = __webpack_require__(25);
 	var State = __webpack_require__(28);
@@ -127,6 +130,19 @@
 	      description: 'to display the list of all connected users.',
 	      test: /^\/users?$/,
 	      handler: _this.onListUsers.bind(_this)
+	    }, {
+	      name: '/rooms',
+	      description: 'to display the list of all available rooms.',
+	      test: /^\/rooms?$/,
+	      handler: _this.onListRooms.bind(_this)
+	    }, {
+	      name: '#<room name> OR /join <room name>',
+	      description: 'to join an existing room, or create a new one.',
+	      test: /^((\/join\s)|#)[\w_-]{1,30}$/,
+	      parse: function parse(room) {
+	        return room.replace('/join ', '').replace(/^#/, '');
+	      },
+	      handler: _this.onJoinRoom.bind(_this)
 	    }, {
 	      name: '/1337',
 	      description: 'to toggle the leetSpe4k mode 1!!1!1!',
@@ -194,8 +210,11 @@
 	    _this.state = {
 	      username: '',
 	      userList: [],
+	      roomList: [],
+	      currentRoom: '',
 	      isMuted: false,
-	      isLeetSpeak: false
+	      isLeetSpeak: false,
+	      isFirstConnection: true
 	    };
 	    return _this;
 	  }
@@ -217,11 +236,15 @@
 	      var _this2 = this;
 
 	      Print.homeScreen().then(function () {
+	        return _this2.listenToUpdates();
+	      }).then(function () {
 	        return _this2.connect();
 	      }).then(function () {
-	        return _this2.listen();
-	      }).then(function () {
 	        return _this2.login();
+	      }).then(function () {
+	        return _this2.chooseRoom();
+	      }).then(function () {
+	        return _this2.listenToMessages();
 	      }).then(function () {
 	        return _this2.prompt();
 	      }).catch(function (err) {
@@ -252,35 +275,53 @@
 	      });
 	    }
 	  }, {
-	    key: 'prompt',
-	    value: function prompt() {
+	    key: 'chooseRoom',
+	    value: function chooseRoom() {
 	      var _this5 = this;
 
-	      return Print.messagePrompt(this.state.username).then(function (message) {
-	        return _this5.onSendNewMessage(message);
-	      }).then(function () {
-	        return _this5.prompt();
+	      return Print.chooseRoomPrompt(this.state.roomList).then(function (room) {
+	        return _this5.onJoinRoom(room);
 	      });
 	    }
 	  }, {
-	    key: 'listen',
-	    value: function listen() {
+	    key: 'prompt',
+	    value: function prompt() {
 	      var _this6 = this;
 
+	      return Print.messagePrompt(this.state.username).then(function (message) {
+	        return _this6.onSendNewMessage(message);
+	      }).then(function () {
+	        return _this6.prompt();
+	      });
+	    }
+	  }, {
+	    key: 'listenToUpdates',
+	    value: function listenToUpdates() {
+	      var _this7 = this;
+
+	      this.socket.on('user_list_update', function (users) {
+	        return _this7.onUserListUpdate(users);
+	      });
+	      this.socket.on('room_list_update', function (rooms) {
+	        return _this7.onRoomListUpdate(rooms);
+	      });
+	    }
+	  }, {
+	    key: 'listenToMessages',
+	    value: function listenToMessages() {
+	      var _this8 = this;
+
 	      this.socket.on('message', function (message) {
-	        return _this6.onReceiveMessage(message);
+	        return _this8.onReceiveMessage(message);
 	      });
 	      this.socket.on('say_message', function (message) {
-	        return _this6.onReceiveSayMessage(message);
+	        return _this8.onReceiveSayMessage(message);
 	      });
 	      this.socket.on('user_join', function (user) {
-	        return _this6.onUserJoin(user);
+	        return _this8.onUserJoin(user);
 	      });
-	      this.socket.on('user_leave', function (user) {
-	        return _this6.onUserLeave(user);
-	      });
-	      this.socket.on('user_list_update', function (users) {
-	        return _this6.onUserListUpdate(users);
+	      this.socket.on('user_leave', function (user, userNextRoom) {
+	        return _this8.onUserLeave(user, userNextRoom);
 	      });
 	    }
 	  }, {
@@ -302,6 +343,11 @@
 	    key: 'onListUsers',
 	    value: function onListUsers() {
 	      return Print.activeUsers(this.activeUsers);
+	    }
+	  }, {
+	    key: 'onListRooms',
+	    value: function onListRooms() {
+	      return Print.availableRooms(this.state.roomList);
 	    }
 	  }, {
 	    key: 'onListVoices',
@@ -340,14 +386,19 @@
 	    }
 	  }, {
 	    key: 'onUserLeave',
-	    value: function onUserLeave(username) {
+	    value: function onUserLeave(username, userNextRoom) {
 	      Notification.userLeft(username);
-	      return Print.userLeft(username);
+	      return Print.userLeft(username, userNextRoom);
 	    }
 	  }, {
 	    key: 'onUserListUpdate',
 	    value: function onUserListUpdate(userList) {
 	      return this.setState({ userList: userList });
+	    }
+	  }, {
+	    key: 'onRoomListUpdate',
+	    value: function onRoomListUpdate(roomList) {
+	      return this.setState({ roomList: roomList });
 	    }
 	  }, {
 	    key: 'onConnect',
@@ -357,14 +408,27 @@
 	  }, {
 	    key: 'onLogin',
 	    value: function onLogin(username) {
-	      var _this7 = this;
-
 	      this.setState({ username: username });
+	      return this.emitLogin(username).then(function () {
+	        return Print.welcome(username);
+	      });
+	    }
+	  }, {
+	    key: 'onJoinRoom',
+	    value: function onJoinRoom(room) {
+	      var _this9 = this;
 
-	      return Print.welcome(username).then(function () {
-	        return Print.help(_this7.commands);
+	      this.setState({ currentRoom: room });
+	      return this.emitJoinRoom(room).then(function () {
+	        return Print.joinRoom(room);
 	      }).then(function () {
-	        return _this7.emitJoinRoom();
+	        return _this9.state.isFirstConnection ? Print.help(_this9.commands) : Promise.resolve();
+	      }).then(function () {
+	        return _this9.setState({ isFirstConnection: false });
+	      }).then(function () {
+	        return wait(300);
+	      }).then(function () {
+	        return _this9.onListUsers();
 	      });
 	    }
 	  }, {
@@ -410,12 +474,12 @@
 	  }, {
 	    key: 'emitMessage',
 	    value: function emitMessage(message) {
-	      var _this8 = this;
+	      var _this10 = this;
 
 	      return this.convertMessage(message).then(function (msg) {
-	        return _this8.formatMessage(msg);
+	        return _this10.formatMessage(msg);
 	      }).then(function (msg) {
-	        _this8.socket.emit('message', msg);
+	        _this10.socket.emit('message', msg);
 	        Print.myMessage(msg);
 	      });
 	    }
@@ -443,21 +507,27 @@
 	  }, {
 	    key: 'emitImageMessage',
 	    value: function emitImageMessage(url) {
-	      var _this9 = this;
+	      var _this11 = this;
 
 	      return toAscii(url).then(function (converted) {
 	        return '\n' + converted;
 	      }).then(function (msg) {
-	        return _this9.emitMessage(msg);
+	        return _this11.emitMessage(msg);
 	      }).catch(isDev ? function (err) {
 	        return console.log('emitMessage error :', err);
 	      } : noOp);
 	    }
 	  }, {
+	    key: 'emitLogin',
+	    value: function emitLogin(username) {
+	      this.socket.emit('login', username);
+	      return Promise.resolve(username);
+	    }
+	  }, {
 	    key: 'emitJoinRoom',
-	    value: function emitJoinRoom() {
-	      this.socket.emit('user_join', this.state.username);
-	      return Promise.resolve();
+	    value: function emitJoinRoom(room) {
+	      this.socket.emit('join_room', room);
+	      return Promise.resolve(room);
 	    }
 	  }, {
 	    key: 'activeUsers',
@@ -1007,10 +1077,26 @@
 
 	"use strict";
 
-	module.exports.noOp = function () {};
+	var wait = function wait(milliseconds) {
+	  return new Promise(function (resolve) {
+	    return setTimeout(resolve, milliseconds);
+	  });
+	};
+
+	module.exports = {
+	  wait: wait
+	};
 
 /***/ },
 /* 15 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports.noOp = function () {};
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1020,16 +1106,16 @@
 	var _require = __webpack_require__(5),
 	    flatMap = _require.flatMap;
 
-	var _require2 = __webpack_require__(16),
+	var _require2 = __webpack_require__(17),
 	    Spinner = _require2.Spinner;
 
-	var inquirer = __webpack_require__(17);
-	var Cursor = __webpack_require__(18);
-	var chalk = __webpack_require__(19);
+	var inquirer = __webpack_require__(18);
+	var Cursor = __webpack_require__(19);
+	var chalk = __webpack_require__(20);
 	var figlet = __webpack_require__(4);
-	var clear = __webpack_require__(20);
+	var clear = __webpack_require__(21);
 
-	var _require3 = __webpack_require__(21),
+	var _require3 = __webpack_require__(14),
 	    wait = _require3.wait;
 
 	/* ----------------------------------------- *
@@ -1056,7 +1142,7 @@
 	// homeScreen : _ -> Promise
 	var homeScreen = function homeScreen() {
 	  clear();
-	  return log(chalk.cyan.dim(figlet.textSync('H#cker Ch4t', { horizontalLayout: 'full' }))).then(function () {
+	  return log(chalk.cyan.dim(figlet.textSync('M3ss3ng3rz', { horizontalLayout: 'full' }))).then(function () {
 	    return connectingSpinner.start();
 	  });
 	};
@@ -1069,7 +1155,7 @@
 
 	// welcome : String -> Promise
 	var welcome = function welcome(username) {
-	  return log(chalk.magenta('\n\n\tWelcome H4ck3r ' + username));
+	  return log(chalk.magenta('\n\tWelcome H4ck3r ' + username + '\n'));
 	};
 
 	// Command : { name : String, description : String }
@@ -1119,14 +1205,21 @@
 
 	// activeUsers : [String] -> Promise
 	var activeUsers = function activeUsers(_activeUsers) {
-	  return log(chalk.magenta('\nC0nnect3d H#ckerz :\n'), chalk.cyan(_activeUsers.reduce(function (acc, username) {
+	  return log(chalk.magenta('\nC0nnect3d H#ckerz :\n\n'), chalk.cyan(_activeUsers.reduce(function (acc, username) {
 	    return acc + '\t- ' + username + '\n';
 	  }, '')));
 	};
 
+	// availableRooms :: [String] -> Promise
+	var availableRooms = function availableRooms(rooms) {
+	  return log(chalk.magenta('\nH3re 4re tH3 4va1l4ble ro0ms :\n\n'), chalk.cyan(rooms.reduce(function (acc, room) {
+	    return acc + '\t- ' + room + '\n';
+	  }, '')), chalk.magenta('\nJoin it by typing #<room name>, or /join <room name>\n'));
+	};
+
 	// availableVoices :: [String] -> Promise
 	var availableVoices = function availableVoices(voices) {
-	  return log(chalk.magenta('\nH3re 4re tH3 v01cez U c4n u5e :\n'), chalk.cyan(voices.reduce(function (acc, voice) {
+	  return log(chalk.magenta('\nH3re 4re tH3 v01cez U c4n u5e :\n\n'), chalk.cyan(voices.reduce(function (acc, voice) {
 	    return acc + '\t- ' + voice + '\n';
 	  }, '')));
 	};
@@ -1144,8 +1237,12 @@
 	};
 
 	// userLeft : String -> Promise
-	var userLeft = function userLeft(username) {
-	  return log(chalk.red(username + ' has left the chat.'));
+	var userLeft = function userLeft(username, userNextRoom) {
+	  return log(chalk.red(userNextRoom ? username + ' has left this room and joined #' + userNextRoom : username + ' has left the chat.'));
+	};
+
+	var joinRoom = function joinRoom(room) {
+	  return log(chalk.green('you just joined #' + room + '.'));
 	};
 
 	// mutedStatus : Boolean -> Promise
@@ -1200,6 +1297,55 @@
 	  });
 	};
 
+	var createRoomCopy = 'Create a new room';
+
+	// chooseRoomPrompt : [String] -> Promise
+	var chooseRoomPrompt = function chooseRoomPrompt(rooms) {
+	  return inquirer.prompt([{
+	    name: 'room',
+	    type: 'list',
+	    message: 'Cho0se a room b3llow:',
+	    choices: rooms.map(function (x) {
+	      return '#' + x;
+	    }).concat(createRoomCopy),
+	    validate: function validate(value) {
+	      console.log(value);
+	      if (!value.trim()) {
+	        return 'Ple4se Cho0se a room b3llow';
+	      } else {
+	        return true;
+	      }
+	    }
+	  }]).then(function (_ref6) {
+	    var room = _ref6.room;
+	    return room.trim().replace(/^#/, '');
+	  }).then(function (room) {
+	    return room === createRoomCopy ? createRoomPrompt() : room;
+	  });
+	};
+
+	var createRoomPrompt = function createRoomPrompt() {
+	  return inquirer.prompt([{
+	    name: 'room',
+	    type: 'input',
+	    message: 'Room Name: #',
+	    validate: function validate(value) {
+	      if (value.length > 30) {
+	        return 'W4y to0 long...';
+	      } else if (!value.trim()) {
+	        return 'You h4ve to typ3 a n4me';
+	      } else if (!value.trim().match(/^[\w_-]{1,30}$/)) {
+	        return 'Sp4ces and sp3cials char4cter2 are forb1dden f0r room nam3s';
+	      } else {
+	        return true;
+	      }
+	    }
+	  }]).then(function (_ref7) {
+	    var room = _ref7.room;
+	    return room.trim();
+	  });
+	};
+
 	module.exports = {
 	  homeScreen: homeScreen,
 	  connectionSuccess: connectionSuccess,
@@ -1210,61 +1356,48 @@
 	  sayMessage: sayMessage,
 	  mySayMessage: mySayMessage,
 	  activeUsers: activeUsers,
+	  availableRooms: availableRooms,
 	  availableVoices: availableVoices,
 	  availableEmojis: availableEmojis,
 	  userJoined: userJoined,
 	  userLeft: userLeft,
+	  joinRoom: joinRoom,
 	  mutedStatus: mutedStatus,
 	  leetSpeakStatus: leetSpeakStatus,
 	  loginPrompt: loginPrompt,
-	  messagePrompt: messagePrompt
+	  messagePrompt: messagePrompt,
+	  chooseRoomPrompt: chooseRoomPrompt
 	};
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	module.exports = require("clui");
 
 /***/ },
 /* 17 */
 /***/ function(module, exports) {
 
-	module.exports = require("inquirer");
+	module.exports = require("clui");
 
 /***/ },
 /* 18 */
 /***/ function(module, exports) {
 
-	module.exports = require("terminal-cursor");
+	module.exports = require("inquirer");
 
 /***/ },
 /* 19 */
 /***/ function(module, exports) {
 
-	module.exports = require("chalk");
+	module.exports = require("terminal-cursor");
 
 /***/ },
 /* 20 */
 /***/ function(module, exports) {
 
-	module.exports = require("clear");
+	module.exports = require("chalk");
 
 /***/ },
 /* 21 */
 /***/ function(module, exports) {
 
-	"use strict";
-
-	var wait = function wait(milliseconds) {
-	  return new Promise(function (resolve) {
-	    return setTimeout(resolve, milliseconds);
-	  });
-	};
-
-	module.exports = {
-	  wait: wait
-	};
+	module.exports = require("clear");
 
 /***/ },
 /* 22 */

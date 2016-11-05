@@ -1,6 +1,6 @@
 {
   "name": "ch4t",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Chat with your hacker friends inside the terminal.",
   "main": "src/index.js",
   "scripts": {
