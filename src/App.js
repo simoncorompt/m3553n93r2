@@ -103,7 +103,7 @@ class App extends State {
       {
         name: '/up',
         description: 'to print an ASCII finger emoji pointing up.',
-        test: /^\/lourd$/,
+        test: /^\/up$/,
         handler: this.emitMessage.bind(this, asciiImage.lourd),
       },
       {

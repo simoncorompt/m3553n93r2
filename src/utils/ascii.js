@@ -4,6 +4,7 @@ const request = require('request')
 const imageToAscii = require('asciify-image')
 const emojis = require('../assets/data/emojis.json')
 const { isImageUrl, extractImageFullName } = require('./url')
+const { downloadsFolderPath, createDownloadFolderIfDoesntExist } = require('./files')
 
 const fileExists = filePath => new Promise((resolve, reject) => {
   var parsed = filePath.replace(/\\/g, '')
@@ -14,8 +15,10 @@ const fileExists = filePath => new Promise((resolve, reject) => {
 const downloadImage = url => new Promise((resolve, reject) => {
   if (!isImageUrl(url)) return reject(new Error('dowloadImage error : not a valid image url'))
 
+  createDownloadFolderIfDoesntExist()
+
   const imageName = extractImageFullName(url)
-  const filePath = path.resolve(__dirname, '..', '..', 'files', imageName)
+  const filePath = path.join(downloadsFolderPath, imageName)
 
   request(url).pipe(fs.createWriteStream(filePath)).on('close', err => {
     if (err) return reject(err)
