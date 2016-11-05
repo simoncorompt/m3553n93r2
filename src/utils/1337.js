@@ -4,8 +4,6 @@ const convertTo1337 = str =>
 const leetMap = {
   'a': '4',
   'e': '3',
-  'g': '9',
-  't': '7',
   'i': '1',
   'o': '0',
 }
