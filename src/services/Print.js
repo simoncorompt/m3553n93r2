@@ -134,6 +134,10 @@ const userLeft = username => log(
   chalk.red(`${username} has left the chat.`)
 )
 
+const joinRoom = room => log(
+  chalk.green(`you just joined ${room}.`)
+)
+
 // mutedStatus : Boolean -> Promise
 const mutedStatus = isMuted => log(
   chalk.cyan(`m3553n93r2 is now ${isMuted ? 'muted' : 'unmuted'}.`)
@@ -184,6 +188,51 @@ const messagePrompt = username =>
     }])
     .then(({ message }) => message.trim())
 
+
+const createRoomCopy = 'Cre4te a new ro0m'
+
+// chooseRoomPrompt : [String] -> Promise
+const chooseRoomPrompt = rooms =>
+  inquirer
+    .prompt([{
+      name: 'room',
+      type: 'list',
+      message: 'Cho0se a room b3llow:',
+      choices: rooms.concat(createRoomCopy),
+      validate: value => {
+        console.log(value)
+        if (!value.trim()) {
+          return 'Ple4se Cho0se a room b3llow'
+        } else {
+          return true
+        }
+      }
+    }])
+    .then(({ room }) => room.trim())
+    .then(room => room === createRoomCopy
+      ? createRoomPrompt()
+      : room
+    )
+
+const createRoomPrompt = () =>
+  inquirer
+    .prompt([{
+      name: 'room',
+      type: 'input',
+      message: 'Room Name:',
+      validate: value => {
+        if (value.length > 255) {
+          return 'W4y to0 long...'
+        } else if (!value.trim()) {
+          return 'You h4ve to typ3 a r34l n4me'
+        } else {
+          return true
+        }
+      }
+    }])
+    .then(({ room }) => room.trim())
+
+
 module.exports = {
   homeScreen,
   connectionSuccess,
@@ -198,8 +247,10 @@ module.exports = {
   availableEmojis,
   userJoined,
   userLeft,
+  joinRoom,
   mutedStatus,
   leetSpeakStatus,
   loginPrompt,
   messagePrompt,
+  chooseRoomPrompt,
 }

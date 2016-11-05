@@ -111,6 +111,8 @@ class App extends State {
     this.state = {
       username: '',
       userList: [],
+      roomList: [],
+      currentRoom: '',
       isMuted: false,
       isLeetSpeak: false,
     }
@@ -132,9 +134,11 @@ class App extends State {
 
   start() {
     Print.homeScreen()
+      .then(() => this.listenToUpdates())
       .then(() => this.connect())
-      .then(() => this.listen())
       .then(() => this.login())
+      .then(() => this.chooseRoom())
+      .then(() => this.listenToMessages())
       .then(() => this.prompt())
       .catch((err) => {
         console.error(err)
@@ -157,18 +161,27 @@ class App extends State {
       .then(username => this.onLogin(username))
   }
 
+  chooseRoom() {
+    return Print.chooseRoomPrompt(this.state.roomList)
+      .then(room => this.onJoinRoom(room))
+  }
+
   prompt() {
     return Print.messagePrompt(this.state.username)
       .then(message => this.onSendNewMessage(message))
       .then(() => this.prompt())
   }
 
-  listen() {
+  listenToUpdates() {
+    this.socket.on('user_list_update', users => this.onUserListUpdate(users))
+    this.socket.on('room_list_update', rooms => this.onRoomListUpdate(rooms))
+  }
+
+  listenToMessages() {
     this.socket.on('message', message => this.onReceiveMessage(message))
     this.socket.on('say_message', message => this.onReceiveSayMessage(message))
     this.socket.on('user_join', user => this.onUserJoin(user))
     this.socket.on('user_leave', user => this.onUserLeave(user))
-    this.socket.on('user_list_update', users => this.onUserListUpdate(users))
   }
 
   onShowHelp() {
@@ -226,16 +239,25 @@ class App extends State {
     return this.setState({ userList })
   }
 
+  onRoomListUpdate(roomList) {
+    return this.setState({ roomList })
+  }
+
   onConnect() {
     return Print.connectionSuccess()
   }
 
   onLogin(username) {
     this.setState({ username })
+    return this.emitLogin(username)
+      .then(() => Print.welcome(username))
+  }
 
-    return Print.welcome(username)
+  onJoinRoom(room) {
+    this.setState({ currentRoom: room })
+    return this.emitJoinRoom(room)
+      .then(() => Print.joinRoom(room))
       .then(() => Print.help(this.commands))
-      .then(() => this.emitJoinRoom())
   }
 
   onSendNewMessage(message) {
@@ -304,9 +326,14 @@ class App extends State {
       )
   }
 
-  emitJoinRoom() {
-    this.socket.emit('user_join', this.state.username)
-    return Promise.resolve()
+  emitLogin(username) {
+    this.socket.emit('login', username)
+    return Promise.resolve(username)
+  }
+
+  emitJoinRoom(room) {
+    this.socket.emit('join_room', room)
+    return Promise.resolve(room)
   }
 
 }
