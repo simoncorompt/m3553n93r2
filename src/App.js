@@ -4,6 +4,7 @@ const { has, prop, drop, head } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
 const { toAscii, asciiImage, parseEmojis } = require('./utils/ascii')
 const { isImageUrl } = require('./utils/url')
+const { wait } = require('./utils/promise')
 const { noOp } = require('./utils/misc')
 const emojis = require('./assets/data/emojis.json')
 const Print = require('./services/Print')
@@ -39,6 +40,19 @@ class App extends State {
         description: 'to display the list of all connected users.',
         test: /^\/users?$/,
         handler: this.onListUsers.bind(this),
+      },
+      {
+        name: '/rooms',
+        description: 'to display the list of all available rooms.',
+        test: /^\/rooms?$/,
+        handler: this.onListRooms.bind(this),
+      },
+      {
+        name: '#<room name> OR /join <room name>',
+        description: 'to join an existing room, or create a new one.',
+        test: /^((\/join\s)|#)[\w_-]{1,30}$/,
+        parse: room => room.replace('/join ', '').replace(/^#/, ''),
+        handler: this.onJoinRoom.bind(this),
       },
       {
         name: '/1337',
@@ -115,6 +129,7 @@ class App extends State {
       currentRoom: '',
       isMuted: false,
       isLeetSpeak: false,
+      isFirstConnection: true,
     }
   }
 
@@ -181,7 +196,7 @@ class App extends State {
     this.socket.on('message', message => this.onReceiveMessage(message))
     this.socket.on('say_message', message => this.onReceiveSayMessage(message))
     this.socket.on('user_join', user => this.onUserJoin(user))
-    this.socket.on('user_leave', user => this.onUserLeave(user))
+    this.socket.on('user_leave', (user, userNextRoom) => this.onUserLeave(user, userNextRoom))
   }
 
   onShowHelp() {
@@ -198,6 +213,10 @@ class App extends State {
 
   onListUsers() {
     return Print.activeUsers(this.activeUsers)
+  }
+
+  onListRooms() {
+    return Print.availableRooms(this.state.roomList)
   }
 
   onListVoices() {
@@ -230,9 +249,9 @@ class App extends State {
     return Print.userJoined(username)
   }
 
-  onUserLeave(username) {
+  onUserLeave(username, userNextRoom) {
     Notification.userLeft(username)
-    return Print.userLeft(username)
+    return Print.userLeft(username, userNextRoom)
   }
 
   onUserListUpdate(userList) {
@@ -257,7 +276,13 @@ class App extends State {
     this.setState({ currentRoom: room })
     return this.emitJoinRoom(room)
       .then(() => Print.joinRoom(room))
-      .then(() => Print.help(this.commands))
+      .then(() => this.state.isFirstConnection
+        ? Print.help(this.commands)
+        : Promise.resolve()
+      )
+      .then(() => this.setState({ isFirstConnection: false }))
+      .then(() => wait(300))
+      .then(() => this.onListUsers())
   }
 
   onSendNewMessage(message) {

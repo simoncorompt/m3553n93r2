@@ -29,7 +29,7 @@ const homeScreen = () => {
   clear()
   return log(
     chalk.cyan.dim(
-      figlet.textSync('H#cker Ch4t', { horizontalLayout: 'full' })
+      figlet.textSync('M3ss3ng3rz', { horizontalLayout: 'full' })
     )
   )
     .then(() => connectingSpinner.start())
@@ -43,7 +43,7 @@ const connectionSuccess = () => {
 
 // welcome : String -> Promise
 const welcome = username => log(
-  chalk.magenta(`\n\n\tWelcome H4ck3r ${username}`)
+  chalk.magenta(`\n\tWelcome H4ck3r ${username}\n`)
 )
 
 // Command : { name : String, description : String }
@@ -98,16 +98,26 @@ const mySayMessage = (msg) => {
 
 // activeUsers : [String] -> Promise
 const activeUsers = activeUsers => log(
-  chalk.magenta('\nC0nnect3d H#ckerz :\n'),
+  chalk.magenta('\nC0nnect3d H#ckerz :\n\n'),
   chalk.cyan(activeUsers.reduce(
     (acc, username) => `${acc}\t- ${username}\n`,
     ''
   ))
 )
 
+// availableRooms :: [String] -> Promise
+const availableRooms = rooms => log(
+  chalk.magenta('\nH3re 4re tH3 4va1l4ble ro0ms :\n\n'),
+  chalk.cyan(rooms.reduce(
+    (acc, room) => `${acc}\t- ${room}\n`,
+    ''
+  )),
+  chalk.magenta('\nJoin it by typing #<room name>, or /join <room name>\n')
+)
+
 // availableVoices :: [String] -> Promise
 const availableVoices = voices => log(
-  chalk.magenta('\nH3re 4re tH3 v01cez U c4n u5e :\n'),
+  chalk.magenta('\nH3re 4re tH3 v01cez U c4n u5e :\n\n'),
   chalk.cyan(voices.reduce(
     (acc, voice) => `${acc}\t- ${voice}\n`,
     ''
@@ -130,12 +140,16 @@ const userJoined = username => log(
 )
 
 // userLeft : String -> Promise
-const userLeft = username => log(
-  chalk.red(`${username} has left the chat.`)
+const userLeft = (username, userNextRoom) => log(
+  chalk.red(
+    userNextRoom
+      ? `${username} has left this room and joined #${userNextRoom}`
+      : `${username} has left the chat.`
+  )
 )
 
 const joinRoom = room => log(
-  chalk.green(`you just joined ${room}.`)
+  chalk.green(`you just joined #${room}.`)
 )
 
 // mutedStatus : Boolean -> Promise
@@ -189,7 +203,7 @@ const messagePrompt = username =>
     .then(({ message }) => message.trim())
 
 
-const createRoomCopy = 'Cre4te a new ro0m'
+const createRoomCopy = 'Create a new room'
 
 // chooseRoomPrompt : [String] -> Promise
 const chooseRoomPrompt = rooms =>
@@ -198,7 +212,9 @@ const chooseRoomPrompt = rooms =>
       name: 'room',
       type: 'list',
       message: 'Cho0se a room b3llow:',
-      choices: rooms.concat(createRoomCopy),
+      choices: rooms
+        .map(x => `#${x}`)
+        .concat(createRoomCopy),
       validate: value => {
         console.log(value)
         if (!value.trim()) {
@@ -208,7 +224,7 @@ const chooseRoomPrompt = rooms =>
         }
       }
     }])
-    .then(({ room }) => room.trim())
+    .then(({ room }) => room.trim().replace(/^#/, ''))
     .then(room => room === createRoomCopy
       ? createRoomPrompt()
       : room
@@ -219,12 +235,14 @@ const createRoomPrompt = () =>
     .prompt([{
       name: 'room',
       type: 'input',
-      message: 'Room Name:',
+      message: 'Room Name: #',
       validate: value => {
-        if (value.length > 255) {
+        if (value.length > 30) {
           return 'W4y to0 long...'
         } else if (!value.trim()) {
-          return 'You h4ve to typ3 a r34l n4me'
+          return 'You h4ve to typ3 a n4me'
+        } else if (!value.trim().match(/^[\w_-]{1,30}$/)) {
+          return 'Sp4ces and sp3cials char4cter2 are forb1dden f0r room nam3s'
         } else {
           return true
         }
@@ -243,6 +261,7 @@ module.exports = {
   sayMessage,
   mySayMessage,
   activeUsers,
+  availableRooms,
   availableVoices,
   availableEmojis,
   userJoined,
