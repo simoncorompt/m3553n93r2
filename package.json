@@ -9,7 +9,8 @@
     "dev": "NODE_ENV=development node src/index.js",
     "build:webpack": "NODE_ENV=production webpack --config webpack.config.js",
     "shebang": "sh ./scripts/create_shebang_file.sh",
-    "build": "npm run clean && npm run build:webpack && npm run shebang"
+    "build": "npm run clean && npm run build:webpack && npm run shebang",
+    "postinstall": "npm run build"
   },
   "bin": {
     "ch4t": "./dist/shebang.bundle.js"
