@@ -154,6 +154,7 @@ class App extends State {
       .then(() => this.login())
       .then(() => this.chooseRoom())
       .then(() => this.listenToMessages())
+      .then(() => this.startUpdateUserInfo())
       .then(() => this.prompt())
       .catch((err) => {
         console.error(err)
@@ -179,6 +180,20 @@ class App extends State {
   chooseRoom() {
     return Print.chooseRoomPrompt(this.state.roomList)
       .then(room => this.onJoinRoom(room))
+  }
+
+  startUpdateUserInfo() {
+    this.updateUserInfo()
+    return Promise.resolve()
+  }
+
+  updateUserInfo() {
+    Promise.resolve(this.socket.emit('update_user_info', {
+      username: this.state.username,
+      roomName: this.state.currentRoom
+    }))
+      .then(() => wait(60000))
+      .then(() => this.updateUserInfo())
   }
 
   prompt() {

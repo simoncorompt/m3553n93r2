@@ -54,7 +54,8 @@
 	'use strict';
 
 	var App = __webpack_require__(2);
-	var app = new App('https://m3553n93r2.herokuapp.com/');
+	// const app = new App('https://m3553n93r2.herokuapp.com/')
+	var app = new App('http://localhost:3000');
 	app.start();
 
 /***/ },
@@ -246,6 +247,8 @@
 	      }).then(function () {
 	        return _this2.listenToMessages();
 	      }).then(function () {
+	        return _this2.startUpdateUserInfo();
+	      }).then(function () {
 	        return _this2.prompt();
 	      }).catch(function (err) {
 	        console.error(err);
@@ -284,44 +287,64 @@
 	      });
 	    }
 	  }, {
-	    key: 'prompt',
-	    value: function prompt() {
+	    key: 'startUpdateUserInfo',
+	    value: function startUpdateUserInfo() {
+	      this.updateUserInfo();
+	      return Promise.resolve();
+	    }
+	  }, {
+	    key: 'updateUserInfo',
+	    value: function updateUserInfo() {
 	      var _this6 = this;
 
-	      return Print.messagePrompt(this.state.username).then(function (message) {
-	        return _this6.onSendNewMessage(message);
+	      Promise.resolve(this.socket.emit('update_user_info', {
+	        username: this.state.username,
+	        roomName: this.state.currentRoom
+	      })).then(function () {
+	        return wait(60000);
 	      }).then(function () {
-	        return _this6.prompt();
+	        return _this6.updateUserInfo();
+	      });
+	    }
+	  }, {
+	    key: 'prompt',
+	    value: function prompt() {
+	      var _this7 = this;
+
+	      return Print.messagePrompt(this.state.username).then(function (message) {
+	        return _this7.onSendNewMessage(message);
+	      }).then(function () {
+	        return _this7.prompt();
 	      });
 	    }
 	  }, {
 	    key: 'listenToUpdates',
 	    value: function listenToUpdates() {
-	      var _this7 = this;
+	      var _this8 = this;
 
 	      this.socket.on('user_list_update', function (users) {
-	        return _this7.onUserListUpdate(users);
+	        return _this8.onUserListUpdate(users);
 	      });
 	      this.socket.on('room_list_update', function (rooms) {
-	        return _this7.onRoomListUpdate(rooms);
+	        return _this8.onRoomListUpdate(rooms);
 	      });
 	    }
 	  }, {
 	    key: 'listenToMessages',
 	    value: function listenToMessages() {
-	      var _this8 = this;
+	      var _this9 = this;
 
 	      this.socket.on('message', function (message) {
-	        return _this8.onReceiveMessage(message);
+	        return _this9.onReceiveMessage(message);
 	      });
 	      this.socket.on('say_message', function (message) {
-	        return _this8.onReceiveSayMessage(message);
+	        return _this9.onReceiveSayMessage(message);
 	      });
 	      this.socket.on('user_join', function (user) {
-	        return _this8.onUserJoin(user);
+	        return _this9.onUserJoin(user);
 	      });
 	      this.socket.on('user_leave', function (user, userNextRoom) {
-	        return _this8.onUserLeave(user, userNextRoom);
+	        return _this9.onUserLeave(user, userNextRoom);
 	      });
 	    }
 	  }, {
@@ -416,19 +439,19 @@
 	  }, {
 	    key: 'onJoinRoom',
 	    value: function onJoinRoom(room) {
-	      var _this9 = this;
+	      var _this10 = this;
 
 	      this.setState({ currentRoom: room });
 	      return this.emitJoinRoom(room).then(function () {
 	        return Print.joinRoom(room);
 	      }).then(function () {
-	        return _this9.state.isFirstConnection ? Print.help(_this9.commands) : Promise.resolve();
+	        return _this10.state.isFirstConnection ? Print.help(_this10.commands) : Promise.resolve();
 	      }).then(function () {
-	        return _this9.setState({ isFirstConnection: false });
+	        return _this10.setState({ isFirstConnection: false });
 	      }).then(function () {
 	        return wait(300);
 	      }).then(function () {
-	        return _this9.onListUsers();
+	        return _this10.onListUsers();
 	      });
 	    }
 	  }, {
@@ -474,12 +497,12 @@
 	  }, {
 	    key: 'emitMessage',
 	    value: function emitMessage(message) {
-	      var _this10 = this;
+	      var _this11 = this;
 
 	      return this.convertMessage(message).then(function (msg) {
-	        return _this10.formatMessage(msg);
+	        return _this11.formatMessage(msg);
 	      }).then(function (msg) {
-	        _this10.socket.emit('message', msg);
+	        _this11.socket.emit('message', msg);
 	        Print.myMessage(msg);
 	      });
 	    }
@@ -507,12 +530,12 @@
 	  }, {
 	    key: 'emitImageMessage',
 	    value: function emitImageMessage(url) {
-	      var _this11 = this;
+	      var _this12 = this;
 
 	      return toAscii(url).then(function (converted) {
 	        return '\n' + converted;
 	      }).then(function (msg) {
-	        return _this11.emitMessage(msg);
+	        return _this12.emitMessage(msg);
 	      }).catch(isDev ? function (err) {
 	        return console.log('emitMessage error :', err);
 	      } : noOp);
@@ -572,8 +595,6 @@
 	var leetMap = {
 	  'a': '4',
 	  'e': '3',
-	  'g': '9',
-	  't': '7',
 	  'i': '1',
 	  'o': '0'
 	};
