@@ -55,8 +55,7 @@
 	'use strict';
 
 	var App = __webpack_require__(2);
-	// const app = new App('https://m3553n93r2.herokuapp.com/')
-	var app = new App('http://localhost:3000');
+	var app = new App('https://m3553n93r2.herokuapp.com/');
 	app.start();
 
 /***/ },
