@@ -43,7 +43,7 @@ const appVersion = version => log(
 const installLatestVersion = version => log(
   chalk.magenta(`A new version is available!`),
   chalk.white('Type'),
-  chalk.cyan.bold('npm install ch4t -g'),
+  chalk.cyan.bold('npm install ch4t@latest -g'),
   chalk.white(`to get v${version}.\n`)
 )
 
