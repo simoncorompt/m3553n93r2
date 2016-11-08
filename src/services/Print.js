@@ -51,9 +51,9 @@ const welcome = username => log(
 const help = commands => {
   const commandsInfo = flatMap(
     ({ name, description }) => [
-      chalk.cyan('\ttype'),
-      chalk.white.bold(name),
-      chalk.cyan(`${description}\n\n`),
+      chalk.white('\ttype'),
+      chalk.cyan.bold(name),
+      chalk.white(`${description}\n\n`),
     ],
     commands
   )
