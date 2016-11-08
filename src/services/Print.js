@@ -32,8 +32,23 @@ const homeScreen = () => {
       figlet.textSync('M3ss3ng3rz', { horizontalLayout: 'full' })
     )
   )
-    .then(() => connectingSpinner.start())
 }
+
+// appVersion : String -> Promise
+const appVersion = version => log(
+  chalk.white(`v${version}\n`)
+)
+
+// installLatestVersion : String -> Promise
+const installLatestVersion = version => log(
+  chalk.magenta(`A new version is available!`),
+  chalk.white('Type'),
+  chalk.cyan.bold('npm install ch4t -g'),
+  chalk.white(`to get v${version}.\n`)
+)
+
+const connectionSpinner = () =>
+  Promise.resolve(connectingSpinner.start())
 
 // connectionSuccess : _ -> Promise
 const connectionSuccess = () => {
@@ -109,7 +124,7 @@ const activeUsers = activeUsers => log(
 const availableRooms = rooms => log(
   chalk.magenta('\nH3re 4re tH3 4va1l4ble ro0ms :\n\n'),
   chalk.white.bold(rooms.reduce(
-    (acc, room) => `${acc}\t- ${room}\n`,
+    (acc, room) => `${acc}\t- ${room.name} (${room.users.length})\n`,
     ''
   )),
   chalk.magenta('\nJoin it by typing #<room name>, or /join <room name>\n')
@@ -213,10 +228,9 @@ const chooseRoomPrompt = rooms =>
       type: 'list',
       message: 'Cho0se a room b3llow:',
       choices: rooms
-        .map(x => `#${x}`)
+        .map(x => `#${x.name} (${x.users.length})`)
         .concat(createRoomCopy),
       validate: value => {
-        console.log(value)
         if (!value.trim()) {
           return 'Ple4se Cho0se a room b3llow'
         } else {
@@ -224,7 +238,11 @@ const chooseRoomPrompt = rooms =>
         }
       }
     }])
-    .then(({ room }) => room.trim().replace(/^#/, ''))
+    .then(({ room }) =>
+      room.trim()
+        .replace(/^#/, '')
+        .replace(/\s\([0-9]+\)$/, '')
+    )
     .then(room => room === createRoomCopy
       ? createRoomPrompt()
       : room
@@ -253,6 +271,9 @@ const createRoomPrompt = () =>
 
 module.exports = {
   homeScreen,
+  appVersion,
+  installLatestVersion,
+  connectionSpinner,
   connectionSuccess,
   welcome,
   help,

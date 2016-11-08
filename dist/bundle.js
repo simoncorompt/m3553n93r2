@@ -55,6 +55,7 @@
 
 	var App = __webpack_require__(2);
 	var app = new App('https://m3553n93r2.herokuapp.com/');
+	// const app = new App('http://localhost:3000/')
 	app.start();
 
 /***/ },
@@ -102,6 +103,8 @@
 	var Notification = __webpack_require__(23);
 	var Audio = __webpack_require__(26);
 	var State = __webpack_require__(29);
+	var latestVersion = __webpack_require__(30);
+	var packageInfo = __webpack_require__(31);
 
 	var isDev = process.env.NODE_ENV === 'development';
 
@@ -240,6 +243,8 @@
 	      }).then(function () {
 	        return _this2.connect();
 	      }).then(function () {
+	        return _this2.checkVersion();
+	      }).then(function () {
 	        return _this2.login();
 	      }).then(function () {
 	        return _this2.chooseRoom();
@@ -255,13 +260,27 @@
 	      });
 	    }
 	  }, {
+	    key: 'checkVersion',
+	    value: function checkVersion() {
+	      var version = packageInfo.version;
+
+	      return Print.appVersion(version).then(function () {
+	        return latestVersion('ch4t');
+	      }).then(function (latestVersion) {
+	        return latestVersion !== version ? Print.installLatestVersion(latestVersion) : Promise.resolve();
+	      });
+	    }
+	  }, {
 	    key: 'connect',
 	    value: function connect() {
 	      var _this3 = this;
 
-	      return new Promise(function (resolve, reject) {
-	        _this3.socket.on('connect', function (err) {
-	          if (err) reject();else resolve();
+	      return Print.connectionSpinner().then(function () {
+	        return new Promise(function (resolve, reject) {
+	          _this3.socket.on('connect', function (err) {
+	            if (err) return reject();
+	            return resolve();
+	          });
 	        });
 	      }).then(function () {
 	        return _this3.onConnect();
@@ -1188,20 +1207,32 @@
 	// homeScreen : _ -> Promise
 	var homeScreen = function homeScreen() {
 	  clear();
-	  return log(chalk.cyan.dim(figlet.textSync('M3ss3ng3rz', { horizontalLayout: 'full' }))).then(function () {
-	    return connectingSpinner.start();
-	  });
+	  return log(chalk.cyan.dim(figlet.textSync('M3ss3ng3rz', { horizontalLayout: 'full' })));
+	};
+
+	// appVersion : String -> Promise
+	var appVersion = function appVersion(version) {
+	  return log(chalk.white('v' + version + '\n'));
+	};
+
+	// installLatestVersion : String -> Promise
+	var installLatestVersion = function installLatestVersion(version) {
+	  return log(chalk.magenta('A new version is available!'), chalk.white('Type'), chalk.cyan.bold('npm install ch4t -g'), chalk.white('to get v' + version + '.\n'));
+	};
+
+	var connectionSpinner = function connectionSpinner() {
+	  return Promise.resolve(connectingSpinner.start());
 	};
 
 	// connectionSuccess : _ -> Promise
 	var connectionSuccess = function connectionSuccess() {
 	  connectingSpinner.stop();
-	  return log(chalk.cyan('\nClient successfully connected!'));
+	  return log(chalk.magenta('\nClient successfully connected!\n'));
 	};
 
 	// welcome : String -> Promise
 	var welcome = function welcome(username) {
-	  return log(chalk.magenta('\n\tWelcome H4ck3r ' + username + '\n'));
+	  return log(chalk.magenta('\nWelcome H4ck3r ' + username + '\n'));
 	};
 
 	// Command : { name : String, description : String }
@@ -1210,10 +1241,10 @@
 	  var commandsInfo = flatMap(function (_ref) {
 	    var name = _ref.name,
 	        description = _ref.description;
-	    return [chalk.cyan('\ttype'), chalk.white.bold(name), chalk.cyan(description + '\n\n')];
+	    return [chalk.white('\ttype'), chalk.cyan.bold(name), chalk.white(description + '\n\n')];
 	  }, commands);
 
-	  return log.apply(undefined, [chalk.white.bold('\n\nWe g0t som3 c0ol comm4nds th4t you ne3d t0 kn0w:\n\n')].concat(_toConsumableArray(commandsInfo), [chalk.white.bold('\n\nEnj0y th1s r3sp0n5ibly... \n\n')])).then(function () {
+	  return log.apply(undefined, [chalk.magenta('\n\nWe g0t som3 c0ol comm4nds th4t you ne3d t0 kn0w:\n\n')].concat(_toConsumableArray(commandsInfo), [chalk.magenta('\nEnj0y th1s r3sp0n5ibly... \n\n')])).then(function () {
 	    return wait(200);
 	  });
 	};
@@ -1251,28 +1282,28 @@
 
 	// activeUsers : [String] -> Promise
 	var activeUsers = function activeUsers(_activeUsers) {
-	  return log(chalk.magenta('\nC0nnect3d H#ckerz :\n\n'), chalk.cyan(_activeUsers.reduce(function (acc, username) {
+	  return log(chalk.magenta('\nC0nnect3d H#ckerz :\n\n'), chalk.white.bold(_activeUsers.reduce(function (acc, username) {
 	    return acc + '\t- ' + username + '\n';
 	  }, '')));
 	};
 
 	// availableRooms :: [String] -> Promise
 	var availableRooms = function availableRooms(rooms) {
-	  return log(chalk.magenta('\nH3re 4re tH3 4va1l4ble ro0ms :\n\n'), chalk.cyan(rooms.reduce(function (acc, room) {
-	    return acc + '\t- ' + room + '\n';
+	  return log(chalk.magenta('\nH3re 4re tH3 4va1l4ble ro0ms :\n\n'), chalk.white.bold(rooms.reduce(function (acc, room) {
+	    return acc + '\t- ' + room.name + ' (' + room.users.length + ')\n';
 	  }, '')), chalk.magenta('\nJoin it by typing #<room name>, or /join <room name>\n'));
 	};
 
 	// availableVoices :: [String] -> Promise
 	var availableVoices = function availableVoices(voices) {
-	  return log(chalk.magenta('\nH3re 4re tH3 v01cez U c4n u5e :\n\n'), chalk.cyan(voices.reduce(function (acc, voice) {
+	  return log(chalk.magenta('\nH3re 4re tH3 v01cez U c4n u5e :\n\n'), chalk.white.bold(voices.reduce(function (acc, voice) {
 	    return acc + '\t- ' + voice + '\n';
 	  }, '')));
 	};
 
 	// availableVoices :: [String] -> Promise
 	var availableEmojis = function availableEmojis(emojis) {
-	  return log(chalk.magenta('\nH3re 4re tH3 3m0jis U c4n u5e :\n'), chalk.cyan(Object.keys(emojis).reduce(function (acc, emoji) {
+	  return log(chalk.magenta('\nH3re 4re tH3 3m0jis U c4n u5e :\n'), chalk.white.bold(Object.keys(emojis).reduce(function (acc, emoji) {
 	    return acc + '\t- ' + emoji + '\n';
 	  }, '')), chalk.magenta('\nTh1s is a f#kin lo7 0f em0j1s.\n'));
 	};
@@ -1288,17 +1319,17 @@
 	};
 
 	var joinRoom = function joinRoom(room) {
-	  return log(chalk.green('you just joined #' + room + '.'));
+	  return log(chalk.green('\nyou just joined #' + room + '.'));
 	};
 
 	// mutedStatus : Boolean -> Promise
 	var mutedStatus = function mutedStatus(isMuted) {
-	  return log(chalk.cyan('m3553n93r2 is now ' + (isMuted ? 'muted' : 'unmuted') + '.'));
+	  return log(chalk.magenta('m3553n93r2 is now ' + (isMuted ? 'muted' : 'unmuted') + '.'));
 	};
 
 	// leetSpeakStatus : Boolean -> Promise
 	var leetSpeakStatus = function leetSpeakStatus(isLeetSpeak) {
-	  return log(chalk.cyan('m3553n93r2 is now in ' + (isLeetSpeak ? '1337' : 'normal') + ' mode.'));
+	  return log(chalk.magenta('m3553n93r2 is now in ' + (isLeetSpeak ? '1337' : 'normal') + ' mode.'));
 	};
 
 	// loginPrompt : _ -> Promise
@@ -1352,10 +1383,9 @@
 	    type: 'list',
 	    message: 'Cho0se a room b3llow:',
 	    choices: rooms.map(function (x) {
-	      return '#' + x;
+	      return '#' + x.name + ' (' + x.users.length + ')';
 	    }).concat(createRoomCopy),
 	    validate: function validate(value) {
-	      console.log(value);
 	      if (!value.trim()) {
 	        return 'Ple4se Cho0se a room b3llow';
 	      } else {
@@ -1364,7 +1394,7 @@
 	    }
 	  }]).then(function (_ref6) {
 	    var room = _ref6.room;
-	    return room.trim().replace(/^#/, '');
+	    return room.trim().replace(/^#/, '').replace(/\s\([0-9]+\)$/, '');
 	  }).then(function (room) {
 	    return room === createRoomCopy ? createRoomPrompt() : room;
 	  });
@@ -1394,6 +1424,9 @@
 
 	module.exports = {
 	  homeScreen: homeScreen,
+	  appVersion: appVersion,
+	  installLatestVersion: installLatestVersion,
+	  connectionSpinner: connectionSpinner,
 	  connectionSuccess: connectionSuccess,
 	  welcome: welcome,
 	  help: help,
@@ -1629,6 +1662,67 @@
 	}();
 
 	module.exports = State;
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	module.exports = require("latest-version");
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"name": "ch4t",
+		"version": "1.0.12",
+		"description": "Chat with your hacker friends inside the terminal.",
+		"main": "src/index.js",
+		"scripts": {
+			"clean": "rimraf dist && rimraf files && mkdir files && touch files/.gitkeep",
+			"start": "npm run dev",
+			"dev": "NODE_ENV=development node src/index.js",
+			"build:webpack": "NODE_ENV=production webpack --config webpack.config.js",
+			"shebang": "sh ./scripts/create_shebang_file.sh",
+			"build": "npm run clean && npm run build:webpack && npm run shebang"
+		},
+		"bin": {
+			"ch4t": "./dist/shebang.bundle.js"
+		},
+		"author": "Simon Corompt, Gabriel Vergnaud",
+		"license": "ISC",
+		"dependencies": {
+			"asciify-image": "0.0.8",
+			"chalk": "^1.1.3",
+			"clear": "0.0.1",
+			"clui": "^0.3.1",
+			"figlet": "^1.1.2",
+			"inquirer": "^1.1.3",
+			"latest-version": "^2.0.0",
+			"lodash": "^4.16.2",
+			"node-notifier": "^4.6.1",
+			"open": "0.0.5",
+			"play-sound": "0.0.9",
+			"request": "^2.76.0",
+			"say": "^0.10.0",
+			"socket.io-client": "^1.4.8",
+			"terminal-cursor": "0.0.3"
+		},
+		"devDependencies": {
+			"babel-core": "^6.18.2",
+			"babel-loader": "^6.2.7",
+			"babel-preset-es2015": "^6.18.0",
+			"json-loader": "^0.5.4",
+			"rimraf": "^2.5.4",
+			"shebang-loader": "^0.0.1",
+			"webpack": "^1.13.3",
+			"webpack-node-externals": "^1.5.4"
+		},
+		"repository": {
+			"url": "https://github.com/simoncorompt/m3553n93r2.git",
+			"type": "git"
+		}
+	};
 
 /***/ }
 /******/ ]);

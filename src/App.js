@@ -11,7 +11,8 @@ const Print = require('./services/Print')
 const Notification = require('./services/Notification')
 const Audio = require('./services/Audio')
 const State = require('./State')
-
+const latestVersion = require('latest-version')
+const packageInfo = require('../package.json')
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -151,6 +152,7 @@ class App extends State {
     Print.homeScreen()
       .then(() => this.listenToUpdates())
       .then(() => this.connect())
+      .then(() => this.checkVersion())
       .then(() => this.login())
       .then(() => this.chooseRoom())
       .then(() => this.listenToMessages())
@@ -162,13 +164,25 @@ class App extends State {
       })
   }
 
+  checkVersion() {
+    const { version } = packageInfo
+    return Print.appVersion(version)
+      .then(() => latestVersion('ch4t'))
+      .then(latestVersion =>
+        latestVersion !== version
+          ? Print.installLatestVersion(latestVersion)
+          : Promise.resolve()
+      )
+  }
+
   connect() {
-    return new Promise((resolve, reject) => {
-      this.socket.on('connect', (err) => {
-        if (err) reject()
-        else resolve()
-      })
-    })
+    return Print.connectionSpinner()
+      .then(() => new Promise((resolve, reject) => {
+        this.socket.on('connect', err => {
+          if (err) return reject()
+          return resolve()
+        })
+      }))
       .then(() => this.onConnect())
   }
 
