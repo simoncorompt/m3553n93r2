@@ -38,12 +38,12 @@ const homeScreen = () => {
 // connectionSuccess : _ -> Promise
 const connectionSuccess = () => {
   connectingSpinner.stop()
-  return log(chalk.cyan('\nClient successfully connected!'))
+  return log(chalk.magenta('\nClient successfully connected!\n'))
 }
 
 // welcome : String -> Promise
 const welcome = username => log(
-  chalk.magenta(`\n\tWelcome H4ck3r ${username}\n`)
+  chalk.magenta(`\nWelcome H4ck3r ${username}\n`)
 )
 
 // Command : { name : String, description : String }
@@ -59,9 +59,9 @@ const help = commands => {
   )
 
   return log(
-    chalk.white.bold('\n\nWe g0t som3 c0ol comm4nds th4t you ne3d t0 kn0w:\n\n'),
+    chalk.magenta('\n\nWe g0t som3 c0ol comm4nds th4t you ne3d t0 kn0w:\n\n'),
     ...commandsInfo,
-    chalk.white.bold('\n\nEnj0y th1s r3sp0n5ibly... \n\n')
+    chalk.magenta('\nEnj0y th1s r3sp0n5ibly... \n\n')
   )
     .then(() => wait(200))
 }
@@ -99,7 +99,7 @@ const mySayMessage = (msg) => {
 // activeUsers : [String] -> Promise
 const activeUsers = activeUsers => log(
   chalk.magenta('\nC0nnect3d H#ckerz :\n\n'),
-  chalk.cyan(activeUsers.reduce(
+  chalk.white.bold(activeUsers.reduce(
     (acc, username) => `${acc}\t- ${username}\n`,
     ''
   ))
@@ -108,7 +108,7 @@ const activeUsers = activeUsers => log(
 // availableRooms :: [String] -> Promise
 const availableRooms = rooms => log(
   chalk.magenta('\nH3re 4re tH3 4va1l4ble ro0ms :\n\n'),
-  chalk.cyan(rooms.reduce(
+  chalk.white.bold(rooms.reduce(
     (acc, room) => `${acc}\t- ${room}\n`,
     ''
   )),
@@ -118,7 +118,7 @@ const availableRooms = rooms => log(
 // availableVoices :: [String] -> Promise
 const availableVoices = voices => log(
   chalk.magenta('\nH3re 4re tH3 v01cez U c4n u5e :\n\n'),
-  chalk.cyan(voices.reduce(
+  chalk.white.bold(voices.reduce(
     (acc, voice) => `${acc}\t- ${voice}\n`,
     ''
   ))
@@ -127,7 +127,7 @@ const availableVoices = voices => log(
 // availableVoices :: [String] -> Promise
 const availableEmojis = emojis => log(
   chalk.magenta('\nH3re 4re tH3 3m0jis U c4n u5e :\n'),
-  chalk.cyan(Object.keys(emojis).reduce(
+  chalk.white.bold(Object.keys(emojis).reduce(
     (acc, emoji) => `${acc}\t- ${emoji}\n`,
     ''
   )),
@@ -149,17 +149,17 @@ const userLeft = (username, userNextRoom) => log(
 )
 
 const joinRoom = room => log(
-  chalk.green(`you just joined #${room}.`)
+  chalk.green(`\nyou just joined #${room}.`)
 )
 
 // mutedStatus : Boolean -> Promise
 const mutedStatus = isMuted => log(
-  chalk.cyan(`m3553n93r2 is now ${isMuted ? 'muted' : 'unmuted'}.`)
+  chalk.magenta(`m3553n93r2 is now ${isMuted ? 'muted' : 'unmuted'}.`)
 )
 
 // leetSpeakStatus : Boolean -> Promise
 const leetSpeakStatus = isLeetSpeak => log(
-  chalk.cyan(`m3553n93r2 is now in ${isLeetSpeak ? '1337' : 'normal'} mode.`)
+  chalk.magenta(`m3553n93r2 is now in ${isLeetSpeak ? '1337' : 'normal'} mode.`)
 )
 
 // loginPrompt : _ -> Promise
