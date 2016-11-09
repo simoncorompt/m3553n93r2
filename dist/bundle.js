@@ -185,13 +185,18 @@
 	    }, {
 	      name: '/yeah',
 	      description: 'to say you like that, boldly.',
-	      test: /^\/rock$/,
-	      handler: _this.emitMessage.bind(_this, asciiImage.rock)
+	      test: /^\/yeah$/,
+	      handler: _this.emitMessage.bind(_this, asciiImage.yeah)
 	    }, {
 	      name: '/up',
 	      description: 'to print an ASCII finger emoji pointing up.',
 	      test: /^\/up$/,
-	      handler: _this.emitMessage.bind(_this, asciiImage.lourd)
+	      handler: _this.emitMessage.bind(_this, asciiImage.up)
+	    }, {
+	      name: '<3',
+	      description: 'to express your love.',
+	      test: /^<3$/,
+	      handler: _this.emitMessage.bind(_this, asciiImage.heart)
 	    }, {
 	      name: '/big <message>',
 	      description: 'to print a BIG ASCII text. Must be under 30 character, though.',
@@ -687,9 +692,11 @@
 
 	var lollypop = '\n\n      ,-""-.\n     :======:\n     :======;\n      `-.,-\'\n        ||\n      _,\'\'--.    _____\n     (/ __   `._|\n    ((_/_)\\     |\n     (____)`.___|\n      (___)____.|_____\n\n';
 
-	var rock = '\n\n                              __\n                             /  \\\n                            |    |\n              _             |    |\n           /\'  |            | _  |\n           |   |            |    |\n           | _ |            |    |\n           |   |            |    |\n           |   |        __  | _  |\n           | _ |  __   /  \\ |    |\n           |   | /  \\ |    ||    |\n           |   ||    ||    ||    |       _---.\n           |   ||    ||    |. __ |     ./     |\n           | _. | -- || -- |    `|    /      //\n           |\'   |    ||    |     |   /`     (/\n           |    |    ||    |     | ./       /\n           |    |.--.||.--.|  __ |/       .|\n           |  __|    ||    |-\'            /\n           |-\'   \\__/  \\__/             .|\n           |       _.-\'                 /\n           |   _.-\'      /             |\n           |            /             /\n           |           |             /\n           `           |            /\n           \\          |          /\'\n           |          `        /\n           \\                .\'\n           |                |\n           |                |\n           |                |\n           |                |\n\n';
+	var yeah = '\n\n                              __\n                             /  \\\n                            |    |\n              _             |    |\n           /\'  |            | _  |\n           |   |            |    |\n           | _ |            |    |\n           |   |            |    |\n           |   |        __  | _  |\n           | _ |  __   /  \\ |    |\n           |   | /  \\ |    ||    |\n           |   ||    ||    ||    |       _---.\n           |   ||    ||    |. __ |     ./     |\n           | _. | -- || -- |    `|    /      //\n           |\'   |    ||    |     |   /`     (/\n           |    |    ||    |     | ./       /\n           |    |.--.||.--.|  __ |/       .|\n           |  __|    ||    |-\'            /\n           |-\'   \\__/  \\__/             .|\n           |       _.-\'                 /\n           |   _.-\'      /             |\n           |            /             /\n           |           |             /\n           `           |            /\n           \\          |          /\'\n           |          `        /\n           \\                .\'\n           |                |\n           |                |\n           |                |\n           |                |\n\n';
 
-	var lourd = '\n\n                    .--.\n                   /    \\\n                   |    |\n                   |    |\n                   |  _ |\n                   |    |\n                   |    |\n                   |    |\n                   |  _ |\n                   |    |\n             .--.  |    |\n            /    \\/     |\n         .-<.     \\     |\n        /    \\     \\    _\\_\n        |     \\     \\.-\')  `.\n      .-L.     \\     \\-\'     \\\n     /    \\     \\  .\')    ,-  \\\n     |     \\     \\`-\' `--\\     \\\n     | (    \\  .\')   /    `.   |\n     | _\\    \\`-\'   /          |\n     \\   \\  .\')               /\n      \\   `--\'     /         /\n       \\           |        /\n        \\                 .\'\n         \\          _ .  /\n          \\ _ . - \'      |\n          |              |\n          |              |\n\n';
+	var up = '\n\n                    .--.\n                   /    \\\n                   |    |\n                   |    |\n                   |  _ |\n                   |    |\n                   |    |\n                   |    |\n                   |  _ |\n                   |    |\n             .--.  |    |\n            /    \\/     |\n         .-<.     \\     |\n        /    \\     \\    _\\_\n        |     \\     \\.-\')  `.\n      .-L.     \\     \\-\'     \\\n     /    \\     \\  .\')    ,-  \\\n     |     \\     \\`-\' `--\\     \\\n     | (    \\  .\')   /    `.   |\n     | _\\    \\`-\'   /          |\n     \\   \\  .\')               /\n      \\   `--\'     /         /\n       \\           |        /\n        \\                 .\'\n         \\          _ .  /\n          \\ _ . - \'      |\n          |              |\n          |              |\n\n';
+
+	var heart = '\n\n            ******       ******\n          **********   **********\n        ************* *************\n       *****************************\n       *****************************\n       *****************************\n        ***************************\n          ***********************\n            *******************\n              ***************\n                ***********\n                  *******\n                    ***\n                     *\n\n';
 
 	module.exports = {
 	  toAscii: toAscii,
@@ -697,8 +704,9 @@
 	  asciiImage: {
 	    thumbUp: thumbUp,
 	    lollypop: lollypop,
-	    rock: rock,
-	    lourd: lourd
+	    yeah: yeah,
+	    up: up,
+	    heart: heart
 	  }
 	};
 
@@ -1217,7 +1225,7 @@
 
 	// installLatestVersion : String -> Promise
 	var installLatestVersion = function installLatestVersion(version) {
-	  return log(chalk.magenta('A new version is available!'), chalk.white('Type'), chalk.cyan.bold('npm install ch4t -g'), chalk.white('to get v' + version + '.\n'));
+	  return log(chalk.magenta('A new version is available!'), chalk.white('Type'), chalk.cyan.bold('npm install ch4t@latest -g'), chalk.white('to get v' + version + '.\n'));
 	};
 
 	var connectionSpinner = function connectionSpinner() {

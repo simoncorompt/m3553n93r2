@@ -98,14 +98,20 @@ class App extends State {
       {
         name: '/yeah',
         description: 'to say you like that, boldly.',
-        test: /^\/rock$/,
-        handler: this.emitMessage.bind(this, asciiImage.rock),
+        test: /^\/yeah$/,
+        handler: this.emitMessage.bind(this, asciiImage.yeah),
       },
       {
         name: '/up',
         description: 'to print an ASCII finger emoji pointing up.',
         test: /^\/up$/,
-        handler: this.emitMessage.bind(this, asciiImage.lourd),
+        handler: this.emitMessage.bind(this, asciiImage.up),
+      },
+      {
+        name: '<3',
+        description: 'to express your love.',
+        test: /^<3$/,
+        handler: this.emitMessage.bind(this, asciiImage.heart),
       },
       {
         name: '/big <message>',
