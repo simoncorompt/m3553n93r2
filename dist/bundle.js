@@ -1683,7 +1683,7 @@
 
 	module.exports = {
 		"name": "ch4t",
-		"version": "1.0.12",
+		"version": "1.0.14",
 		"description": "Chat with your hacker friends inside the terminal.",
 		"main": "src/index.js",
 		"scripts": {
