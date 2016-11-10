@@ -1732,7 +1732,7 @@
 
 	module.exports = {
 		"name": "ch4t",
-		"version": "1.0.14",
+		"version": "1.0.16",
 		"description": "Chat with your hacker friends inside the terminal.",
 		"main": "src/index.js",
 		"scripts": {
