@@ -115,7 +115,7 @@ class App extends State {
       },
       {
         name: '/big <message>',
-        description: 'to print a BIG ASCII text. Must be under 30 character, though.',
+        description: 'to print a BIG ASCII text. Must be under 30 characters, though.',
         test: /^\/big\s.{1,30}$/,
         parse: msg => msg.replace('/big ', ''),
         handler: this.emitBigMessage.bind(this),
@@ -131,7 +131,9 @@ class App extends State {
 
     this.state = {
       username: '',
+      // User :: { name: String }
       userList: [],
+      // Room :: { name: String, users: [User] }
       roomList: [],
       currentRoom: '',
       isMuted: false,
@@ -274,6 +276,11 @@ class App extends State {
     if (!this.state.isMuted) {
       Notification.messageReceived(msg)
       Audio.say(msg.message, msg.voice)
+        .catch(
+          isDev
+            ? err => console.log('Audio.say error :', err)
+            : noOp
+        )
     }
 
     return Print.sayMessage(msg)
@@ -346,7 +353,8 @@ class App extends State {
   formatMessage(message) {
     return {
       message,
-      username: this.state.username
+      username: this.state.username,
+      createdAt: Date.now(),
     }
   }
 
@@ -360,14 +368,16 @@ class App extends State {
   }
 
   emitSayMessage({ message, voice }) {
-    const msg = {
-      message,
-      username: this.state.username,
-      voice,
-    }
+    const msg = Object.assign({}, this.formatMessage(message), { voice })
 
     this.socket.emit('say_message', msg)
     Audio.say(msg.message, msg.voice)
+      .catch(
+        isDev
+          ? err => console.log('Audio.say error :', err)
+          : noOp
+      )
+
     return Print.mySayMessage(msg)
   }
 

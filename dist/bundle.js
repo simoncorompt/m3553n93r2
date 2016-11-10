@@ -100,11 +100,11 @@
 
 	var emojis = __webpack_require__(12);
 	var Print = __webpack_require__(17);
-	var Notification = __webpack_require__(23);
-	var Audio = __webpack_require__(26);
-	var State = __webpack_require__(29);
-	var latestVersion = __webpack_require__(30);
-	var packageInfo = __webpack_require__(31);
+	var Notification = __webpack_require__(24);
+	var Audio = __webpack_require__(27);
+	var State = __webpack_require__(30);
+	var latestVersion = __webpack_require__(31);
+	var packageInfo = __webpack_require__(32);
 
 	var isDev = process.env.NODE_ENV === 'development';
 
@@ -199,7 +199,7 @@
 	      handler: _this.emitMessage.bind(_this, asciiImage.heart)
 	    }, {
 	      name: '/big <message>',
-	      description: 'to print a BIG ASCII text. Must be under 30 character, though.',
+	      description: 'to print a BIG ASCII text. Must be under 30 characters, though.',
 	      test: /^\/big\s.{1,30}$/,
 	      parse: function parse(msg) {
 	        return msg.replace('/big ', '');
@@ -217,7 +217,9 @@
 
 	    _this.state = {
 	      username: '',
+	      // User :: { name: String }
 	      userList: [],
+	      // Room :: { name: String, users: [User] }
 	      roomList: [],
 	      currentRoom: '',
 	      isMuted: false,
@@ -419,7 +421,9 @@
 	    value: function onReceiveSayMessage(msg) {
 	      if (!this.state.isMuted) {
 	        Notification.messageReceived(msg);
-	        Audio.say(msg.message, msg.voice);
+	        Audio.say(msg.message, msg.voice).catch(isDev ? function (err) {
+	          return console.log('Audio.say error :', err);
+	        } : noOp);
 	      }
 
 	      return Print.sayMessage(msg);
@@ -514,7 +518,8 @@
 	    value: function formatMessage(message) {
 	      return {
 	        message: message,
-	        username: this.state.username
+	        username: this.state.username,
+	        createdAt: Date.now()
 	      };
 	    }
 	  }, {
@@ -535,14 +540,13 @@
 	      var message = _ref2.message,
 	          voice = _ref2.voice;
 
-	      var msg = {
-	        message: message,
-	        username: this.state.username,
-	        voice: voice
-	      };
+	      var msg = Object.assign({}, this.formatMessage(message), { voice: voice });
 
 	      this.socket.emit('say_message', msg);
-	      Audio.say(msg.message, msg.voice);
+	      Audio.say(msg.message, msg.voice).catch(isDev ? function (err) {
+	        return console.log('Audio.say error :', err);
+	      } : noOp);
+
 	      return Print.mySayMessage(msg);
 	    }
 	  }, {
@@ -1191,6 +1195,9 @@
 	var _require3 = __webpack_require__(15),
 	    wait = _require3.wait;
 
+	var _require4 = __webpack_require__(23),
+	    formatTime = _require4.formatTime;
+
 	/* ----------------------------------------- *
 	        Private
 	* ----------------------------------------- */
@@ -1206,6 +1213,21 @@
 	  process.stdout.write("\r\x1b[K");
 	  (_console = console).log.apply(_console, arguments);
 	  return Promise.resolve();
+	};
+
+	var formatDate = function formatDate(time) {
+	  return [chalk.green('?'), chalk.white('[' + formatTime(time) + ']')];
+	};
+
+	var formatUsername = function formatUsername(username) {
+	  var isMe = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+	  return [chalk.white.bold(username + ':')];
+	};
+
+	// remove the input line
+	var removePreviousLog = function removePreviousLog() {
+	  cursor.move('up', 1);
+	  process.stdout.write("\r\x1b[K");
 	};
 
 	/* ----------------------------------------- *
@@ -1260,32 +1282,39 @@
 	// message : { username : String, message : String } -> Promise
 	var message = function message(_ref2) {
 	  var username = _ref2.username,
-	      _message = _ref2.message;
-	  return log(chalk.green('?'), chalk.white.bold(username + ':'), chalk.cyan(_message));
-	};
-
-	// message : { username : String, message : String, voice : String } -> Promise
-	var sayMessage = function sayMessage(_ref3) {
-	  var username = _ref3.username,
-	      message = _ref3.message,
-	      voice = _ref3.voice;
-	  return log(chalk.green('?'), chalk.white.bold(username + ':'), chalk.cyan((voice || '') + ' says "' + message + '"'));
+	      _message = _ref2.message,
+	      createdAt = _ref2.createdAt;
+	  return log.apply(undefined, _toConsumableArray(formatDate(createdAt)).concat(_toConsumableArray(formatUsername(username)), [chalk.cyan(_message)]));
 	};
 
 	// myMessage : { username : String, message : String } -> Promise
-	var myMessage = function myMessage(msg) {
-	  // remove the input line
-	  cursor.move('up', 1);
-	  process.stdout.write("\r\x1b[K");
-	  return message(msg);
+	var myMessage = function myMessage(_ref3) {
+	  var username = _ref3.username,
+	      message = _ref3.message,
+	      createdAt = _ref3.createdAt;
+
+	  removePreviousLog();
+	  return log.apply(undefined, _toConsumableArray(formatDate(createdAt)).concat(_toConsumableArray(formatUsername(username, true)), [chalk.cyan(message)]));
+	};
+
+	// message : { username : String, message : String, voice : String } -> Promise
+	var sayMessage = function sayMessage(_ref4) {
+	  var username = _ref4.username,
+	      message = _ref4.message,
+	      voice = _ref4.voice,
+	      createdAt = _ref4.createdAt;
+	  return log.apply(undefined, _toConsumableArray(formatDate(createdAt)).concat(_toConsumableArray(formatUsername(username)), [chalk.cyan((voice || '') + ' says "' + message + '"')]));
 	};
 
 	// mySayMessage : { username : String, message : String, voice : String } -> Promise
-	var mySayMessage = function mySayMessage(msg) {
-	  // remove the input line
-	  cursor.move('up', 1);
-	  process.stdout.write("\r\x1b[K");
-	  return sayMessage(msg);
+	var mySayMessage = function mySayMessage(_ref5) {
+	  var username = _ref5.username,
+	      message = _ref5.message,
+	      voice = _ref5.voice,
+	      createdAt = _ref5.createdAt;
+
+	  removePreviousLog();
+	  return log.apply(undefined, _toConsumableArray(formatDate(createdAt)).concat(_toConsumableArray(formatUsername(username, true)), [chalk.cyan((voice || '') + ' says "' + message + '"')]));
 	};
 
 	// activeUsers : [String] -> Promise
@@ -1355,8 +1384,8 @@
 	        return true;
 	      }
 	    }
-	  }]).then(function (_ref4) {
-	    var username = _ref4.username;
+	  }]).then(function (_ref6) {
+	    var username = _ref6.username;
 	    return username.trim();
 	  });
 	};
@@ -1366,7 +1395,7 @@
 	  return inquirer.prompt([{
 	    name: 'message',
 	    type: 'input',
-	    message: username + ':',
+	    message: '[' + formatTime(Date.now()) + '] ' + username + ':',
 	    validate: function validate(value) {
 	      if (value.length > 255) {
 	        return 'W4y to0 long...';
@@ -1376,8 +1405,8 @@
 	        return true;
 	      }
 	    }
-	  }]).then(function (_ref5) {
-	    var message = _ref5.message;
+	  }]).then(function (_ref7) {
+	    var message = _ref7.message;
 	    return message.trim();
 	  });
 	};
@@ -1400,8 +1429,8 @@
 	        return true;
 	      }
 	    }
-	  }]).then(function (_ref6) {
-	    var room = _ref6.room;
+	  }]).then(function (_ref8) {
+	    var room = _ref8.room;
 	    return room.trim().replace(/^#/, '').replace(/\s\([0-9]+\)$/, '');
 	  }).then(function (room) {
 	    return room === createRoomCopy ? createRoomPrompt() : room;
@@ -1424,8 +1453,8 @@
 	        return true;
 	      }
 	    }
-	  }]).then(function (_ref7) {
-	    var room = _ref7.room;
+	  }]).then(function (_ref9) {
+	    var room = _ref9.room;
 	    return room.trim();
 	  });
 	};
@@ -1488,13 +1517,34 @@
 
 /***/ },
 /* 23 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var addZero = function addZero(str) {
+	  return str.length < 2 ? "0" + str : str;
+	};
+
+	var formatTime = function formatTime(time) {
+	  var date = new Date(time);
+	  var hours = date.getHours().toString();
+	  var minutes = date.getMinutes().toString();
+	  return addZero(hours) + ":" + addZero(minutes);
+	};
+
+	module.exports = {
+	  formatTime: formatTime
+	};
+
+/***/ },
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var notifier = __webpack_require__(24);
+	var notifier = __webpack_require__(25);
 	var path = __webpack_require__(9);
-	var open = __webpack_require__(25);
+	var open = __webpack_require__(26);
 
 	var _require = __webpack_require__(13),
 	    containsUrl = _require.containsUrl,
@@ -1569,25 +1619,25 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = require("node-notifier");
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = require("open");
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var Player = __webpack_require__(27);
-	var Say = __webpack_require__(28);
+	var Player = __webpack_require__(28);
+	var Say = __webpack_require__(29);
 
 	/* ----------------------------------------- *
 	        Private
@@ -1611,8 +1661,6 @@
 	      if (err) return reject(err);
 	      resolve();
 	    });
-	  }).catch(function (err) {
-	    return console.log('Audio.say error :', err);
 	  });
 	};
 
@@ -1626,19 +1674,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = require("play-sound");
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = require("say");
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1672,13 +1720,13 @@
 	module.exports = State;
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports = require("latest-version");
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports = {

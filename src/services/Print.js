@@ -6,6 +6,7 @@ const chalk = require('chalk')
 const figlet = require('figlet')
 const clear = require('clear')
 const { wait } = require('../utils/promise')
+const { formatTime } = require('../utils/time')
 
 /* ----------------------------------------- *
         Private
@@ -20,9 +21,25 @@ const log = (...info) => {
   return Promise.resolve()
 }
 
+const formatDate = time => [
+  chalk.green('?'),
+  chalk.white(`[${formatTime(time)}]`)
+]
+
+const formatUsername = (username, isMe = false) => [
+  chalk.white.bold(`${username}:`)
+]
+
+// remove the input line
+const removePreviousLog = () => {
+  cursor.move('up', 1)
+  process.stdout.write("\r\x1b[K")
+}
+
 /* ----------------------------------------- *
         Public
 * ----------------------------------------- */
+
 
 // homeScreen : _ -> Promise
 const homeScreen = () => {
@@ -82,33 +99,37 @@ const help = commands => {
 }
 
 // message : { username : String, message : String } -> Promise
-const message = ({ username, message }) => log(
-  chalk.green('?'),
-  chalk.white.bold(`${username}:`),
+const message = ({ username, message, createdAt }) => log(
+  ...formatDate(createdAt),
+  ...formatUsername(username),
   chalk.cyan(message)
 )
 
+// myMessage : { username : String, message : String } -> Promise
+const myMessage = ({ username, message, createdAt }) => {
+  removePreviousLog()
+  return log(
+    ...formatDate(createdAt),
+    ...formatUsername(username, true),
+    chalk.cyan(message)
+  )
+}
+
 // message : { username : String, message : String, voice : String } -> Promise
-const sayMessage = ({ username, message, voice }) => log(
-  chalk.green('?'),
-  chalk.white.bold(`${username}:`),
+const sayMessage = ({ username, message, voice, createdAt }) => log(
+  ...formatDate(createdAt),
+  ...formatUsername(username),
   chalk.cyan(`${voice || ''} says "${message}"`)
 )
 
-// myMessage : { username : String, message : String } -> Promise
-const myMessage = (msg) => {
-  // remove the input line
-  cursor.move('up', 1)
-  process.stdout.write("\r\x1b[K")
-  return message(msg)
-}
-
 // mySayMessage : { username : String, message : String, voice : String } -> Promise
-const mySayMessage = (msg) => {
-  // remove the input line
-  cursor.move('up', 1)
-  process.stdout.write("\r\x1b[K")
-  return sayMessage(msg)
+const mySayMessage = ({ username, message, voice, createdAt }) => {
+  removePreviousLog()
+  return log(
+    ...formatDate(createdAt),
+    ...formatUsername(username, true),
+    chalk.cyan(`${voice || ''} says "${message}"`)
+  )
 }
 
 // activeUsers : [String] -> Promise
@@ -204,7 +225,7 @@ const messagePrompt = username =>
     .prompt([{
       name: 'message',
       type: 'input',
-      message: `${username}:`,
+      message: `[${formatTime(Date.now())}] ${username}:`,
       validate: value => {
         if (value.length > 255) {
           return 'W4y to0 long...'

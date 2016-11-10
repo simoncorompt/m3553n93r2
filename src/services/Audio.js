@@ -22,7 +22,6 @@ const say = (message, voice) => new Promise((resolve, reject) => {
     resolve()
   })
 })
-  .catch(err => console.log('Audio.say error :', err))
 
 
 const voices = [
