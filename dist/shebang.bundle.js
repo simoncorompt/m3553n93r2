@@ -155,7 +155,7 @@
 	    }, {
 	      name: '/say <message> | <voice>',
 	      description: 'to send a message in speech synthesizer mode.',
-	      test: /^\/say\s[\w\.\s\|\']+$/,
+	      test: /^\/say\s.+$/,
 	      parse: function parse(msg) {
 	        return {
 	          message: head(msg.replace('/say ', '').split('|')).trim(),
@@ -1732,7 +1732,7 @@
 
 	module.exports = {
 		"name": "ch4t",
-		"version": "1.0.16",
+		"version": "1.0.17",
 		"description": "Chat with your hacker friends inside the terminal.",
 		"main": "src/index.js",
 		"scripts": {
