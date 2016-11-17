@@ -769,11 +769,10 @@
 		":waves:": "°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸",
 		":waves2:": "(¯`·._.·(¯`·._.·(¯`·._.··._.·´¯)·._.·´¯)·._.·´¯)",
 		":glasses:": "ᒡ◯ᵔ◯ᒢ",
-		":rose:": "--------{---(@",
-		":rose2:": "{இ}ڿڰۣ-ڰۣ~—",
-		":rose3:": "@}}>-----",
-		":stars_in_my_eyes:": "<*_*>",
-		":looking_face:": "ô¿ô",
+		":rose:": "{இ}ڿڰۣ-ڰۣ~—",
+		":rose1:": "@}}>-----",
+		":stareyes:": "<*_*>",
+		":wut:": "ô¿ô",
 		":sleeping:": "(-.-)Zzz...",
 		":sleeping_baby:": "[{-_-}] ZZZzz zz z...",
 		":love_you:": "ℓ٥ﻻ ﻉ√٥υ",
@@ -812,7 +811,6 @@
 		":happy:": "ۜ\\(סּںסּَ` )/ۜ",
 		":happy2:": "⎦˚◡˚⎣",
 		":bender:": "¦̵̱ ̵̱ ̵̱ ̵̱ ̵̱(̢ ̡͇̅└͇̅┘͇̅ (▤8כ−◦",
-		":fish_invasion:": "›(̠̄:̠̄c ›(̠̄:̠̄c (¦Ҝ (¦Ҝ ҉ - - - ¦̺͆¦ ▪▌",
 		":love_face:": "(♥_♥)",
 		":face:": "•|龴◡龴|•",
 		":face2:": "☜Ҩ.¬_¬.Ҩ☞",
@@ -831,9 +829,7 @@
 		":nose2:": "|'L'|",
 		":pirate:": "✌(◕‿-)✌",
 		":human:": "•͡˘㇁•͡˘",
-		":awesome:": "<:3 )~~~",
-		":happy_birthday_1:": "ዞᏜ℘℘Ꮍ ℬℹℛʈዞᗬᏜᎽ",
-		":musical:": "¸¸♬·¯·♩¸¸♪·¯·♫¸¸Happy Birthday To You¸¸♬·¯·♩¸¸♪·¯·♫¸¸",
+		":hb:": "¸¸♬·¯·♩¸¸♪·¯·♫¸¸Happy Birthday To You¸¸♬·¯·♩¸¸♪·¯·♫¸¸",
 		":dunno:": "¯\\_(ツ)_/¯",
 		":dagger:": "cxxx|;:;:;:;:;:;:;:;>",
 		":table_flip:": "(╯°□°）╯︵ ┻━┻",
@@ -853,7 +849,7 @@
 		":finger3:": "‹^› ‹(•_•)› ‹^›",
 		":melp:": "(<>..<>)",
 		":melp2:": "(<(<>(<>.(<>..<>).<>)<>)>)",
-		":homer:": "( (8 ())",
+		":homer:": "=( :c(|)",
 		":homer2:": "(_8(|)",
 		":homer3:": "(_8^(J)",
 		":gun:": "(⌐■_■)--︻╦╤─ - - -",
@@ -870,7 +866,6 @@
 		":jaymz:": "(•̪●)==ε/̵͇̿​̿/’̿’̿ ̿ ̿̿ `(•.°)~",
 		":ghost:": "‹’’›(Ͼ˳Ͽ)‹’’›",
 		":bird:": "(⌒▽⌒)﻿",
-		":chainsword:": "|O/////[{:;:;:;:;:;:;:;:;>",
 		":elephant:": "°j°m",
 		":boobies:": "(. )( .)",
 		":dancing:": "‎(/.__.)/ \\(.__.\\)",
@@ -883,7 +878,6 @@
 		":sat:": "'(◣_◢)'",
 		":cthulhu:": "^(;,;)^",
 		":polar_bear:": "ˁ˚ᴥ˚ˀ",
-		":long_rose:": "---------------------{{---<((@)",
 		":robot_boy:": "◖(◣☩◢)◗",
 		":up:": "(◔/‿\\◔)",
 		":med_man:": "(⋗_⋖)",
@@ -891,14 +885,11 @@
 		":angry:": "ლ(ಠ益ಠ)ლ",
 		":angry2:": "┌∩┐(⋟﹏⋞)┌∩┐",
 		":train:": "/˳˳_˳˳\\!˳˳X˳˳!(˳˳_˳˳)[˳˳_˳˳]",
-		":rainbow_dash_so_awesome:": "/)^3^(\\",
 		":spot:": "( . Y . )",
 		":zoidberg:": "(\\/)(Ö,,,,Ö)(\\/)",
 		":zoidberg2:": "(\\/) (;,,;) (\\/)",
 		":what:": "ة_ة",
 		":what2:": "ლ(ಠ益ಠლ)╯",
-		":westbound_fish:": "< )))) ><",
-		":eastbound_fish:": "><((((>",
 		":telephone:": "ε(๏_๏)з】",
 		":king:": "-_-",
 		":fuck_you:": "nlm (-_-) mln",
@@ -911,19 +902,17 @@
 		":thanks:": "\\(^-^)/",
 		":dalek:": "̵̄/͇̐\\",
 		":lenny:": "( ͡° ͜ʖ ͡°)﻿",
-		":sean_the_sheep:": "<('--')>",
 		":love:": ":} <3 {:",
 		":love2:": "ⓛⓞⓥⓔ",
 		":love3:": "~♡ⓛⓞⓥⓔ♡~",
-		":y_u_no_copy_me:": "(ノಠ益ಠ)ノ彡",
-		":party_time:": "┏(-_-)┛┗(-_-﻿ )┓┗(-_-)┛┏(-_-)┓",
+		":mad:": "(ノಠ益ಠ)ノ彡",
+		":partytime:": "┏(-_-)┛┗(-_-﻿ )┓┗(-_-)┛┏(-_-)┓",
 		":fox:": "-^^,--,~",
 		":angry_face:": "(⋟﹏⋞)",
 		":slenderman:": "ϟƖΣNd€RMαN",
 		":he_has_a_gun:": "(╯°□°)--︻╦╤─ - - -",
-		":lenny_face:": "( ͡° ͜ʖ ͡°)",
-		":gabriel:": "\\,,/.<(*_*)> live long and prosper",
-		":john_lennon:": "((ºjº))",
+		":lennyface:": "( ͡° ͜ʖ ͡°)",
+		":gabriel:": "\\o\\ |o| /o/",
 		":peace_yo:": "(‾⌣‾)♉",
 		":haha:": "٩(^‿^)۶",
 		":sparkling_heart:": "-`ღ´-",
@@ -931,8 +920,6 @@
 		":punch!!:": "O=('-'Q)",
 		":kablewee:": "̿' ̿'\\̵͇̿̿\\з=( ͡ °_̯͡° )=ε/̵͇̿̿/'̿'̿ ̿",
 		":singing:": "d(^o^)b¸¸♬·¯·♩¸¸♪·¯·♫¸¸",
-		":ak47_gun:": "︻デ═一",
-		":nice_boobs:": "(.)(.)",
 		":russian_boobs:": "[.][.]",
 		":monocle:": "ಠ_ರೃ",
 		":fuck_off:": "t(-.-t)",
@@ -961,24 +948,19 @@
 		":being_draged:": "╰(◣﹏◢)╯",
 		":eric:": ">--) ) ) )*>",
 		":beach_bugalow:": "|̲̲̲͡͡͡ ̲▫̲͡ ̲̲̲͡͡π̲̲͡͡ ̲̲͡▫̲̲͡͡ ̲|̡̡̡ ̡ ̴̡ı̴̡̡ ̡͌l̡ ̴̡ı̴̴̡ ̡l̡*̡̡ ̴̡ı̴̴̡ ̡̡͡|̲̲̲͡͡͡ ̲▫̲͡ ̲̲̲͡͡π̲̲͡͡ ̲̲͡▫̲̲͡͡ |",
-		":possessed/disapproval:": "<>_<>",
+		":possessed:": "<>_<>",
 		":puls:": "––•–√\\/––√\\/––•––",
-		":sniper_rifle:": "︻デ┳═ー",
 		":scissors:": "✄",
-		":jokeranonimous:": "╭∩╮ (òÓ,) ╭∩╮",
-		":jokeranonimous2:": "╭∩╮(ô¿ô)╭∩╮",
 		":zombie:": "'º_º'",
 		":zombie2:": "∩ ∩♀-∩- - - -═╦═╗",
 		":chair:": "╦╣",
-		":monocle_guy:": "(c ͡|Q ͜ʖ ͡o)-c[_]",
-		":monocle_guy_with_gun:": "(c ͡|Q ͜ʖ ͡o)╦╤─",
-		":epic_gun:": "︻┳デ═—",
+		":monocleguy:": "(c ͡|Q ͜ʖ ͡o)-c[_]",
+		":monocleguygun:": "(c ͡|Q ͜ʖ ͡o)╦╤─",
 		":lawnmower:": ".......... `.=. ,,,,,,,,,,,,,,",
 		":srsly,_fu:": "(ಠ_ಠ)┌∩┐",
 		":smug_bastard:": "(‾⌣‾)",
-		":mattthehuman:": "óÔÔò ʕ·͡ᴥ·ʔ óÔÔò",
-		":tie-fighter:": "|—O—|",
-		":greatsword:": "{}oo((X))ΞΞΞΞΞΞΞΞΞΞΞΞΞ>",
+		":bear:": "ʕ·͡ᴥ·ʔ",
+		":tiefighter:": "|—O—|",
 		":susie_feagan:": "♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪ღ♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪•* ♪ღ♪ ░H░A░P░P░Y░♪░B░I░R░T░H░D░A░Y░!░♪ღ♪ *•♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪•*",
 		":macintosh:": "",
 		":awesome_face:": "（のワの）",
@@ -988,45 +970,33 @@
 		":breakys_rose:": "இڿڰۣ-ڰۣ—",
 		":faydre:": "(U) [^_^] (U)",
 		":huhu:": "█▬█ █▄█ █▬█ █▄█",
-		":i_see_what_you_did_there:": "☚ (<‿<)☚",
+		":agree:": "☚ (<‿<)☚",
 		":spider:": "/X\\('-')/X\\",
-		":assault_rifle:": "╾━╤デ╦︻",
-		":domino:": "[: :|:::]",
-		":dice:": "[: :]",
-		":ak-47:": "︻┳デ═—",
 		":dance:": "♪┏(°.°)┛┗(°.°)┓┗(°.°)┛┏(°.°)┓ ♪",
-		":eaten_apple:": "[===]-'",
-		":mtmtika:": ":o + :p = 69",
 		":bee:": "¸.·´¯`·¸¸.·´¯`·.¸.-<\\\\^}0=:",
 		":superman:": "-^mOm^-",
-		":nice_ass:": "(_!_)",
 		":gimme:": "༼ つ ◕_◕ ༽つ",
 		":mustache:": ":{",
 		":ukulele:": "{ o }==(::)",
-		":sucky_sword:": "═╬════════►",
 		":boobs:": "(* )( *)",
 		":yay:": "\\(ˆ˚ˆ)/",
-		":sword_1_hand:": "(}====x(#)O================>",
-		":double_table_flip:": "┻━┻ ︵ヽ(`Д´)ﾉ︵﻿ ┻━┻",
+		":tableflip:": "┻━┻ ︵ヽ(`Д´)ﾉ︵﻿ ┻━┻",
 		":fuckbear:": "╭∩╮ʕ•ᴥ•ʔ╭∩╮",
-		":hybrix:": "ʕʘ̅͜ʘ̅ʔ",
+		":meh:": "ʕʘ̅͜ʘ̅ʔ",
 		":rock2:": "\\,,/(◣_◢)\\,,/",
 		":perky:": "( ๏ Y ๏ )",
 		":hit:": "█▬█ █ ▀█▀",
-		":pedo_bear:": "ʕ•ᴥ•ʔ",
 		":people:": "ʕ•̫͡•ʕ*̫͡*ʕ•͓͡•ʔ-̫͡-ʕ•̫͡•ʔ*̫͡*ʔ-̫͡-ʔ",
 		":hug2:": "<(°^°<0",
 		":cheer:": "^(¤o¤)^",
 		":dead_of_boredom:": "*¬*",
 		":omg_what?:": "◕_◕",
-		":japanese_sword:": "cxxxxx][===============>",
 		":neko_face:": "o‿‿o",
 		":jake:": "ˁ(OᴥO)ˀ",
 		":hug:": "(っ◕‿◕)っ",
 		":dumbbell:": "❚█══█❚",
 		":snail:": "'-'_@_",
 		":snail2:": "@╜",
-		":homer_simpson:": "=( :c(|)",
 		":canoe:": "~~~╘══╛~~~~~~~~~",
 		":table_back:": "┏━┓ ︵ /(^.^/)",
 		":arrow:": "»»---------------------►",
@@ -1054,33 +1024,28 @@
 		":egg2:": "ლ(́◕◞Ѿ◟◕‵ლ)",
 		":cya:": "ヽ(´o｀；",
 		":bunny:": "(\\_/)",
-		":sniperstars:": "✯╾━╤デ╦︻✯",
-		":kokain:": "̿ ̿' ̿'\\̵͇̿̿\\з=(•̪●)=ε/̵͇̿̿/'̿''̿ ̿",
-		":angry_lenny:": "( ͠° ͟ʖ ͡°)﻿",
+		":scarface:": "̿ ̿' ̿'\\̵͇̿̿\\з=(•̪●)=ε/̵͇̿̿/'̿''̿ ̿",
+		":angrylenny:": "( ͠° ͟ʖ ͡°)﻿",
 		":3:": "ᕙ༼ ,,ԾܫԾ,, ༽ᕗ",
 		":5:": "ᕙ༼ ,,இܫஇ,, ༽ᕗ",
-		":noob:": " '_\" ",
 		":metal:": "\\m/_(>_<)_\\m/",
-		":nx:": "▄︻̷̿┻̿═━一",
 		":killer:": "(⌐■_■)--︻╦╤─ - - - (╥﹏╥)",
-		":ankush:": "︻デ┳═ー*----*",
 		":fu:": "(ಠ_ಠ)┌∩┐",
 		":russian:": "(°Д°)",
 		":amused:": "(●*∩_∩*●)",
 		":cry2:": "(¡~¡)",
 		":kiss:": "(o'3'o)",
-		":sorreh_bro:": "(◢_◣)",
+		":sorry:": "(◢_◣)",
 		":owlkin:": "(ᾢȍˬȍ)ᾢ ļ ļ ļ ļ ļ",
 		":formula1:": "\\ō͡≡o˞̶",
 		":yolo:": "Yᵒᵘ Oᶰˡʸ Lᶤᵛᵉ Oᶰᶜᵉ",
-		":keep_an_eye_out:": "(ಠ_x) ༼☉",
+		":keepaneyeout:": "(ಠ_x) ༼☉",
 		":rare:": "┌ಠ_ಠ)┌∩┐ ᶠᶸᶜᵏ♥ᵧₒᵤ",
 		":rope:": "╚(▲_▲)╝",
 		":chess:": "♚ ♛ ♜ ♝ ♞ ♟ ♔ ♕ ♖ ♗ ♘ ♙",
 		":weather:": "☼ ☀ ☁ ☂ ☃ ☄ ☾ ☽ ❄ ☇ ☈ ⊙ ☉ ℃ ℉ ° ❅ ✺ ϟ",
 		":upsidedown:": "( ͜。 ͡ʖ ͜。)",
-		":old_lady_boobs:": "|\\o/\\o/|",
-		":nathan:": "♪└(￣◇￣)┐♪└(￣◇￣)┐♪└(￣◇￣)┐♪",
+		":dance2:": "♪└(￣◇￣)┐♪└(￣◇￣)┐♪└(￣◇￣)┐♪",
 		":cat_smile:": "≧◔◡◔≦﻿"
 	};
 
@@ -1198,6 +1163,9 @@
 
 	var _require4 = __webpack_require__(23),
 	    formatTime = _require4.formatTime;
+
+	var _require5 = __webpack_require__(7),
+	    parseEmojis = _require5.parseEmojis;
 
 	/* ----------------------------------------- *
 	        Private
@@ -1342,7 +1310,7 @@
 	// availableVoices :: [String] -> Promise
 	var availableEmojis = function availableEmojis(emojis) {
 	  return log(chalk.magenta('\nH3re 4re tH3 3m0jis U c4n u5e :\n'), chalk.white.bold(Object.keys(emojis).reduce(function (acc, emoji) {
-	    return acc + '\t- ' + emoji + '\n';
+	    return acc + '\t- ' + emoji + '\t->\t' + parseEmojis(emoji) + '\n\n';
 	  }, '')), chalk.magenta('\nTh1s is a f#kin lo7 0f em0j1s.\n'));
 	};
 
@@ -1543,33 +1511,29 @@
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var notifier = __webpack_require__(25);
+	var _require = __webpack_require__(25),
+	    NotificationCenter = _require.NotificationCenter;
+
 	var path = __webpack_require__(9);
 	var open = __webpack_require__(26);
 
-	var _require = __webpack_require__(13),
-	    containsUrl = _require.containsUrl,
-	    extractUrl = _require.extractUrl;
+	var _require2 = __webpack_require__(13),
+	    containsUrl = _require2.containsUrl,
+	    extractUrl = _require2.extractUrl;
 
-	notifier.on('click', function (notifierObject, _ref) {
-	  var message = _ref.message;
-
-	  if (containsUrl(message)) open(extractUrl(message));
-	});
+	var notifier = new NotificationCenter();
 
 	var notify = function notify(options) {
 	  return new Promise(function (resolve, reject) {
-	    notifier.notify(options, function (err, response) {
-	      if (err) return reject(err);else resolve(response);
+	    notifier.notify(options, function (err, response, metadata) {
+	      if (err) return reject(err);else resolve({ response: response, metadata: metadata });
 	    });
-	  }).catch(function (err) {
-	    return console.error('notification error', err);
 	  });
 	};
 
-	var notifyMessage = function notifyMessage(_ref2) {
-	  var username = _ref2.username,
-	      message = _ref2.message;
+	var notifyMessage = function notifyMessage(_ref) {
+	  var username = _ref.username,
+	      message = _ref.message;
 	  return notify({
 	    title: username + ' s4y5 :',
 	    message: message,
@@ -1577,21 +1541,20 @@
 	  });
 	};
 
-	var notifyLink = function notifyLink(_ref3) {
-	  var username = _ref3.username,
-	      message = _ref3.message;
+	var notifyLink = function notifyLink(_ref2) {
+	  var username = _ref2.username,
+	      message = _ref2.message;
 	  return notify({
 	    title: username + ' s3n7 a l1nk :',
 	    message: 'Cl1ck here t0 0pen it.\n' + extractUrl(message),
 	    icon: path.join(__dirname, 'assets', 'images', 'notif-thumbnail.png'),
-	    time: 30000,
-	    wait: true
+	    open: extractUrl(message)
 	  });
 	};
 
-	var messageReceived = function messageReceived(_ref4) {
-	  var username = _ref4.username,
-	      message = _ref4.message;
+	var messageReceived = function messageReceived(_ref3) {
+	  var username = _ref3.username,
+	      message = _ref3.message;
 
 	  return containsUrl(message) ? notifyLink({ username: username, message: message }) : notifyMessage({ username: username, message: message });
 	};
@@ -1732,7 +1695,7 @@
 
 	module.exports = {
 		"name": "ch4t",
-		"version": "1.0.17",
+		"version": "1.0.18",
 		"description": "Chat with your hacker friends inside the terminal.",
 		"main": "src/index.js",
 		"scripts": {
