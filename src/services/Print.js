@@ -7,6 +7,7 @@ const figlet = require('figlet')
 const clear = require('clear')
 const { wait } = require('../utils/promise')
 const { formatTime } = require('../utils/time')
+const { parseEmojis } = require('../utils/ascii')
 
 /* ----------------------------------------- *
         Private
@@ -164,7 +165,7 @@ const availableVoices = voices => log(
 const availableEmojis = emojis => log(
   chalk.magenta('\nH3re 4re tH3 3m0jis U c4n u5e :\n'),
   chalk.white.bold(Object.keys(emojis).reduce(
-    (acc, emoji) => `${acc}\t- ${emoji}\n`,
+    (acc, emoji) => `${acc}\t- ${emoji} -> ${parseEmojis(emoji)}\n`,
     ''
   )),
   chalk.magenta('\nTh1s is a f#kin lo7 0f em0j1s.\n')
