@@ -1215,7 +1215,7 @@
 
 	// installLatestVersion : String -> Promise
 	var installLatestVersion = function installLatestVersion(version) {
-	  return log(chalk.magenta('A new version is available!'), chalk.white('Type'), chalk.cyan.bold('npm install ch4t@latest -g'), chalk.white('to get v' + version + '.\n'));
+	  return log(chalk.magenta(parseEmojis(':gimme:') + ' A new version is available!'), chalk.white('Type'), chalk.cyan.bold('npm install ch4t@latest -g'), chalk.white('to get v' + version + '.\n'));
 	};
 
 	var connectionSpinner = function connectionSpinner() {
@@ -1694,7 +1694,7 @@
 
 	module.exports = {
 		"name": "ch4t",
-		"version": "1.0.18",
+		"version": "1.0.19",
 		"description": "Chat with your hacker friends inside the terminal.",
 		"main": "src/index.js",
 		"scripts": {
