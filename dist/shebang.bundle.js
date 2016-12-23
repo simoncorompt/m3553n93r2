@@ -55,8 +55,8 @@
 	'use strict';
 
 	var App = __webpack_require__(2);
-	var app = new App('https://m3553n93r2.herokuapp.com/');
-	// const app = new App('http://localhost:3000/')
+	var app = new App('https://m3553n93r2.herokuapp.com');
+	// const app = new App('http://localhost:3000')
 	app.start();
 
 /***/ },
@@ -74,39 +74,40 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var io = __webpack_require__(3);
-	var figlet = __webpack_require__(4);
+	var axios = __webpack_require__(4);
+	var figlet = __webpack_require__(5);
 
-	var _require = __webpack_require__(5),
+	var _require = __webpack_require__(6),
 	    has = _require.has,
 	    prop = _require.prop,
 	    drop = _require.drop,
 	    head = _require.head,
 	    includes = _require.includes;
 
-	var _require2 = __webpack_require__(6),
+	var _require2 = __webpack_require__(7),
 	    convertTo1337 = _require2.convertTo1337;
 
-	var _require3 = __webpack_require__(7),
+	var _require3 = __webpack_require__(8),
 	    toAscii = _require3.toAscii,
 	    asciiImage = _require3.asciiImage,
 	    parseEmojis = _require3.parseEmojis;
 
-	var _require4 = __webpack_require__(13),
+	var _require4 = __webpack_require__(14),
 	    isImageUrl = _require4.isImageUrl;
 
-	var _require5 = __webpack_require__(15),
+	var _require5 = __webpack_require__(16),
 	    wait = _require5.wait;
 
-	var _require6 = __webpack_require__(16),
+	var _require6 = __webpack_require__(17),
 	    noOp = _require6.noOp;
 
-	var emojis = __webpack_require__(12);
-	var Print = __webpack_require__(17);
-	var Notification = __webpack_require__(24);
-	var Audio = __webpack_require__(27);
-	var State = __webpack_require__(30);
-	var latestVersion = __webpack_require__(31);
-	var packageInfo = __webpack_require__(32);
+	var emojis = __webpack_require__(13);
+	var Print = __webpack_require__(18);
+	var Notification = __webpack_require__(25);
+	var Audio = __webpack_require__(28);
+	var State = __webpack_require__(31);
+	var latestVersion = __webpack_require__(32);
+	var packageInfo = __webpack_require__(33);
 
 	var isDev = process.env.NODE_ENV === 'development';
 
@@ -118,6 +119,7 @@
 
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
 
+	    _this.serverUrl = serverUrl;
 	    _this.socket = io(serverUrl);
 
 	    _this.commands = [{
@@ -300,8 +302,15 @@
 	    value: function login() {
 	      var _this4 = this;
 
-	      return Print.loginPrompt().then(function (username) {
+	      return Print.loginPrompt(this.checkIfUsernameIsAvailable.bind(this)).then(function (username) {
 	        return _this4.onLogin(username);
+	      });
+	    }
+	  }, {
+	    key: 'checkIfUsernameIsAvailable',
+	    value: function checkIfUsernameIsAvailable(username) {
+	      return axios.post(this.serverUrl + '/check-username', { username: username }).then(function (res) {
+	        return res.data.isAvailable;
 	      });
 	    }
 	  }, {
@@ -609,16 +618,22 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = require("figlet");
+	module.exports = require("axios");
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = require("lodash/fp");
+	module.exports = require("figlet");
 
 /***/ },
 /* 6 */
+/***/ function(module, exports) {
+
+	module.exports = require("lodash/fp");
+
+/***/ },
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -643,22 +658,22 @@
 	};
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fs = __webpack_require__(8);
-	var path = __webpack_require__(9);
-	var request = __webpack_require__(10);
-	var imageToAscii = __webpack_require__(11);
-	var emojis = __webpack_require__(12);
+	var fs = __webpack_require__(9);
+	var path = __webpack_require__(10);
+	var request = __webpack_require__(11);
+	var imageToAscii = __webpack_require__(12);
+	var emojis = __webpack_require__(13);
 
-	var _require = __webpack_require__(13),
+	var _require = __webpack_require__(14),
 	    isImageUrl = _require.isImageUrl,
 	    extractImageFullName = _require.extractImageFullName;
 
-	var _require2 = __webpack_require__(14),
+	var _require2 = __webpack_require__(15),
 	    downloadsFolderPath = _require2.downloadsFolderPath,
 	    createDownloadFolderIfDoesntExist = _require2.createDownloadFolderIfDoesntExist;
 
@@ -723,31 +738,31 @@
 	};
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	module.exports = require("fs");
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	module.exports = require("path");
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	module.exports = require("request");
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	module.exports = require("asciify-image");
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -970,7 +985,7 @@
 		":tiefighter:": "|—O—|",
 		":susie_feagan:": "♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪ღ♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪•* ♪ღ♪ ░H░A░P░P░Y░♪░B░I░R░T░H░D░A░Y░!░♪ღ♪ *•♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪•*",
 		":macintosh:": "",
-		":awesome_face:": "（のワの）",
+		":awesome:": "（のワの）",
 		":donger:": "ヽ༼ຈل͜ຈ༽ﾉ",
 		":kyubey:": "／人 ◕‿‿◕ 人＼",
 		":honeycute:": "❤◦.¸¸. ◦✿",
@@ -1057,7 +1072,7 @@
 	};
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1101,13 +1116,13 @@
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fs = __webpack_require__(8);
-	var path = __webpack_require__(9);
+	var fs = __webpack_require__(9);
+	var path = __webpack_require__(10);
 
 	var downloadsFolderPath = path.join(process.env.HOME, 'Downloads', 'ch4t');
 
@@ -1122,7 +1137,7 @@
 	};
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1138,7 +1153,7 @@
 	};
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1146,32 +1161,32 @@
 	module.exports.noOp = function () {};
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-	var _require = __webpack_require__(5),
+	var _require = __webpack_require__(6),
 	    flatMap = _require.flatMap;
 
-	var _require2 = __webpack_require__(18),
+	var _require2 = __webpack_require__(19),
 	    Spinner = _require2.Spinner;
 
-	var inquirer = __webpack_require__(19);
-	var Cursor = __webpack_require__(20);
-	var chalk = __webpack_require__(21);
-	var figlet = __webpack_require__(4);
-	var clear = __webpack_require__(22);
+	var inquirer = __webpack_require__(20);
+	var Cursor = __webpack_require__(21);
+	var chalk = __webpack_require__(22);
+	var figlet = __webpack_require__(5);
+	var clear = __webpack_require__(23);
 
-	var _require3 = __webpack_require__(15),
+	var _require3 = __webpack_require__(16),
 	    wait = _require3.wait;
 
-	var _require4 = __webpack_require__(23),
+	var _require4 = __webpack_require__(24),
 	    formatTime = _require4.formatTime;
 
-	var _require5 = __webpack_require__(7),
+	var _require5 = __webpack_require__(8),
 	    parseEmojis = _require5.parseEmojis;
 
 	/* ----------------------------------------- *
@@ -1233,12 +1248,12 @@
 	// connectionSuccess : _ -> Promise
 	var connectionSuccess = function connectionSuccess() {
 	  connectingSpinner.stop();
-	  return log(chalk.magenta('\nClient successfully connected!\n'));
+	  return log(chalk.magenta('\n' + parseEmojis(':superdonger:') + ' Client successfully connected!\n'));
 	};
 
 	// welcome : String -> Promise
 	var welcome = function welcome(username) {
-	  return log(chalk.magenta('\nWelcome H4ck3r ' + username + '\n'));
+	  return log(chalk.magenta('\n' + parseEmojis(':donger:') + ' Welcome H4ck3r ' + username + '\n'));
 	};
 
 	// Command : { name : String, description : String }
@@ -1345,20 +1360,26 @@
 	  return log(chalk.magenta('m3553n93r2 is now in ' + (isLeetSpeak ? '1337' : 'normal') + ' mode.'));
 	};
 
-	// loginPrompt : _ -> Promise
-	var loginPrompt = function loginPrompt() {
+	// loginPrompt : (String -> Promise Bool) -> Promise String
+	var loginPrompt = function loginPrompt(validateAvailableUsername) {
 	  return inquirer.prompt([{
 	    name: 'username',
 	    type: 'input',
 	    message: 'Enter your username:',
 	    validate: function validate(value) {
-	      if (value.length > 10) {
-	        return 'W4y to0 long...';
-	      } else if (!value.trim()) {
-	        return 'Pl34ze tYp3 y0ur Uz3rN4me';
-	      } else {
-	        return true;
-	      }
+	      return new Promise(function (resolve) {
+	        if (value.length > 10) {
+	          resolve('W4y to0 long...');
+	        } else if (!value.trim()) {
+	          resolve('Pl34ze tYp3 y0ur Uz3rN4me');
+	        } else {
+	          return resolve(validateAvailableUsername(value).then(function (isAvailable) {
+	            return isAvailable ? true : value + ' is 4lready t4k3n.';
+	          }).catch(function () {
+	            return 'N3tw0rk 3rr0r. R3try in a few sec0nds.';
+	          }));
+	        }
+	      });
 	    }
 	  }]).then(function (_ref6) {
 	    var username = _ref6.username;
@@ -1462,37 +1483,37 @@
 	};
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	module.exports = require("clui");
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	module.exports = require("inquirer");
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	module.exports = require("terminal-cursor");
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	module.exports = require("chalk");
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	module.exports = require("clear");
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1513,18 +1534,18 @@
 	};
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var _require = __webpack_require__(25),
+	var _require = __webpack_require__(26),
 	    NotificationCenter = _require.NotificationCenter;
 
-	var path = __webpack_require__(9);
-	var open = __webpack_require__(26);
+	var path = __webpack_require__(10);
+	var open = __webpack_require__(27);
 
-	var _require2 = __webpack_require__(13),
+	var _require2 = __webpack_require__(14),
 	    containsUrl = _require2.containsUrl,
 	    extractUrl = _require2.extractUrl;
 
@@ -1590,25 +1611,25 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = require("node-notifier");
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	module.exports = require("open");
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var Player = __webpack_require__(28);
-	var Say = __webpack_require__(29);
+	var Player = __webpack_require__(29);
+	var Say = __webpack_require__(30);
 
 	/* ----------------------------------------- *
 	        Private
@@ -1645,19 +1666,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = require("play-sound");
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	module.exports = require("say");
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1691,18 +1712,18 @@
 	module.exports = State;
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports = require("latest-version");
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	module.exports = {
 		"name": "ch4t",
-		"version": "1.0.20",
+		"version": "1.0.21",
 		"description": "Chat with your hacker friends inside the terminal.",
 		"main": "src/index.js",
 		"scripts": {
@@ -1720,6 +1741,7 @@
 		"license": "ISC",
 		"dependencies": {
 			"asciify-image": "0.0.8",
+			"axios": "^0.15.3",
 			"chalk": "^1.1.3",
 			"clear": "0.0.1",
 			"clui": "^0.3.1",

@@ -1,4 +1,5 @@
 const io = require('socket.io-client')
+const axios = require('axios')
 const figlet = require('figlet')
 const { has, prop, drop, head, includes } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
@@ -21,6 +22,7 @@ class App extends State {
   constructor(serverUrl) {
     super()
 
+    this.serverUrl = serverUrl
     this.socket = io(serverUrl)
 
     this.commands = [
@@ -195,8 +197,13 @@ class App extends State {
   }
 
   login() {
-    return Print.loginPrompt()
+    return Print.loginPrompt(this.checkIfUsernameIsAvailable.bind(this))
       .then(username => this.onLogin(username))
+  }
+
+  checkIfUsernameIsAvailable(username) {
+    return axios.post(`${this.serverUrl}/check-username`, { username })
+      .then(res => res.data.isAvailable)
   }
 
   chooseRoom() {

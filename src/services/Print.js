@@ -71,12 +71,12 @@ const connectionSpinner = () =>
 // connectionSuccess : _ -> Promise
 const connectionSuccess = () => {
   connectingSpinner.stop()
-  return log(chalk.magenta('\nClient successfully connected!\n'))
+  return log(chalk.magenta(`\n${parseEmojis(':superdonger:')} Client successfully connected!\n`))
 }
 
 // welcome : String -> Promise
 const welcome = username => log(
-  chalk.magenta(`\nWelcome H4ck3r ${username}\n`)
+  chalk.magenta(`\n${parseEmojis(':donger:')} Welcome H4ck3r ${username}\n`)
 )
 
 // Command : { name : String, description : String }
@@ -199,23 +199,27 @@ const leetSpeakStatus = isLeetSpeak => log(
   chalk.magenta(`m3553n93r2 is now in ${isLeetSpeak ? '1337' : 'normal'} mode.`)
 )
 
-// loginPrompt : _ -> Promise
-const loginPrompt = () =>
+// loginPrompt : (String -> Promise Bool) -> Promise String
+const loginPrompt = validateAvailableUsername =>
   inquirer
     .prompt([
       {
         name: 'username',
         type: 'input',
         message: 'Enter your username:',
-        validate: value => {
+        validate: value => new Promise(resolve => {
           if (value.length > 10) {
-            return 'W4y to0 long...'
+            resolve('W4y to0 long...')
           } else if (!value.trim()) {
-            return 'Pl34ze tYp3 y0ur Uz3rN4me'
+            resolve('Pl34ze tYp3 y0ur Uz3rN4me')
           } else {
-            return true
+            return resolve(
+              validateAvailableUsername(value)
+                .then(isAvailable => isAvailable ? true : `${value} is 4lready t4k3n.`)
+                .catch(() => 'N3tw0rk 3rr0r. R3try in a few sec0nds.')
+            )
           }
-        }
+        })
       }
     ])
     .then(({ username }) => username.trim())
