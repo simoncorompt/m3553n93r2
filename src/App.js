@@ -1,6 +1,6 @@
 const io = require('socket.io-client')
 const figlet = require('figlet')
-const { has, prop, drop, head } = require('lodash/fp')
+const { has, prop, drop, head, includes } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
 const { toAscii, asciiImage, parseEmojis } = require('./utils/ascii')
 const { isImageUrl } = require('./utils/url')
@@ -287,13 +287,19 @@ class App extends State {
   }
 
   onUserJoin(username) {
-    Notification.userJoined(username)
-    return Print.userJoined(username)
+    if (!includes(username, this.activeUsers)) {
+      Notification.userJoined(username)
+      return Print.userJoined(username)
+    }
+    return Promise.resolve()
   }
 
   onUserLeave(username, userNextRoom) {
-    Notification.userLeft(username)
-    return Print.userLeft(username, userNextRoom)
+    if (includes(username, this.activeUsers)) {
+      Notification.userLeft(username)
+      return Print.userLeft(username, userNextRoom)
+    }
+    return Promise.resolve()
   }
 
   onUserListUpdate(userList) {

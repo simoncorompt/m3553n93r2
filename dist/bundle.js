@@ -79,7 +79,8 @@
 	    has = _require.has,
 	    prop = _require.prop,
 	    drop = _require.drop,
-	    head = _require.head;
+	    head = _require.head,
+	    includes = _require.includes;
 
 	var _require2 = __webpack_require__(6),
 	    convertTo1337 = _require2.convertTo1337;
@@ -431,14 +432,20 @@
 	  }, {
 	    key: 'onUserJoin',
 	    value: function onUserJoin(username) {
-	      Notification.userJoined(username);
-	      return Print.userJoined(username);
+	      if (!includes(username, this.activeUsers)) {
+	        Notification.userJoined(username);
+	        return Print.userJoined(username);
+	      }
+	      return Promise.resolve();
 	    }
 	  }, {
 	    key: 'onUserLeave',
 	    value: function onUserLeave(username, userNextRoom) {
-	      Notification.userLeft(username);
-	      return Print.userLeft(username, userNextRoom);
+	      if (includes(username, this.activeUsers)) {
+	        Notification.userLeft(username);
+	        return Print.userLeft(username, userNextRoom);
+	      }
+	      return Promise.resolve();
 	    }
 	  }, {
 	    key: 'onUserListUpdate',
@@ -1250,9 +1257,9 @@
 	// message : { username : String, message : String } -> Promise
 	var message = function message(_ref2) {
 	  var username = _ref2.username,
-	      _message = _ref2.message,
+	      message = _ref2.message,
 	      createdAt = _ref2.createdAt;
-	  return log.apply(undefined, _toConsumableArray(formatDate(createdAt)).concat(_toConsumableArray(formatUsername(username)), [chalk.cyan(_message)]));
+	  return log.apply(undefined, _toConsumableArray(formatDate(createdAt)).concat(_toConsumableArray(formatUsername(username)), [chalk.cyan(message)]));
 	};
 
 	// myMessage : { username : String, message : String } -> Promise
@@ -1694,7 +1701,7 @@
 
 	module.exports = {
 		"name": "ch4t",
-		"version": "1.0.19",
+		"version": "1.0.20",
 		"description": "Chat with your hacker friends inside the terminal.",
 		"main": "src/index.js",
 		"scripts": {
