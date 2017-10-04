@@ -3,7 +3,7 @@ const axios = require('axios')
 const figlet = require('figlet')
 const { has, prop, drop, head, includes } = require('lodash/fp')
 const { convertTo1337 } = require('./utils/1337')
-const { toAscii, asciiImage, parseEmojis } = require('./utils/ascii')
+const { asciiImage, parseEmojis } = require('./utils/ascii')
 const { isImageUrl } = require('./utils/url')
 const { wait } = require('./utils/promise')
 const { noOp } = require('./utils/misc')
@@ -121,13 +121,6 @@ class App extends State {
         test: /^\/big\s.{1,30}$/,
         parse: msg => msg.replace('/big ', ''),
         handler: this.emitBigMessage.bind(this),
-      },
-      {
-        name: '/img <url or local path>',
-        description: 'to print an ASCII converted image. if your url ends in jpg, png or gif you can directly past it ;)',
-        test: /^\/img\s.{1,255}$/,
-        parse: msg => msg.replace('/img ', ''),
-        handler: this.emitImageMessage.bind(this),
       },
     ]
 
@@ -354,9 +347,7 @@ class App extends State {
   }
 
   convertMessage(message) {
-    if (isImageUrl(message)) {
-      return toAscii(message).then(converted => `\n${converted}`)
-    } else if (this.state.isLeetSpeak) {
+    if (this.state.isLeetSpeak) {
       return Promise.resolve(convertTo1337(message))
     }
 
@@ -396,17 +387,6 @@ class App extends State {
 
   emitBigMessage(message) {
     return this.emitMessage(`\n${figlet.textSync(message, { horizontalLayout: 'full' })}`)
-  }
-
-  emitImageMessage(url) {
-    return toAscii(url)
-      .then(converted => `\n${converted}`)
-      .then(msg => this.emitMessage(msg))
-      .catch(
-        isDev
-          ? err => console.log('emitMessage error :', err)
-          : noOp
-      )
   }
 
   emitLogin(username) {

@@ -88,26 +88,25 @@
 	    convertTo1337 = _require2.convertTo1337;
 
 	var _require3 = __webpack_require__(8),
-	    toAscii = _require3.toAscii,
 	    asciiImage = _require3.asciiImage,
 	    parseEmojis = _require3.parseEmojis;
 
-	var _require4 = __webpack_require__(14),
+	var _require4 = __webpack_require__(13),
 	    isImageUrl = _require4.isImageUrl;
 
-	var _require5 = __webpack_require__(16),
+	var _require5 = __webpack_require__(15),
 	    wait = _require5.wait;
 
-	var _require6 = __webpack_require__(17),
+	var _require6 = __webpack_require__(16),
 	    noOp = _require6.noOp;
 
-	var emojis = __webpack_require__(13);
-	var Print = __webpack_require__(18);
-	var Notification = __webpack_require__(25);
-	var Audio = __webpack_require__(28);
-	var State = __webpack_require__(31);
-	var latestVersion = __webpack_require__(32);
-	var packageInfo = __webpack_require__(33);
+	var emojis = __webpack_require__(12);
+	var Print = __webpack_require__(17);
+	var Notification = __webpack_require__(24);
+	var Audio = __webpack_require__(27);
+	var State = __webpack_require__(30);
+	var latestVersion = __webpack_require__(31);
+	var packageInfo = __webpack_require__(32);
 
 	var isDev = process.env.NODE_ENV === 'development';
 
@@ -209,14 +208,6 @@
 	        return msg.replace('/big ', '');
 	      },
 	      handler: _this.emitBigMessage.bind(_this)
-	    }, {
-	      name: '/img <url or local path>',
-	      description: 'to print an ASCII converted image. if your url ends in jpg, png or gif you can directly past it ;)',
-	      test: /^\/img\s.{1,255}$/,
-	      parse: function parse(msg) {
-	        return msg.replace('/img ', '');
-	      },
-	      handler: _this.emitImageMessage.bind(_this)
 	    }];
 
 	    _this.state = {
@@ -520,11 +511,7 @@
 	  }, {
 	    key: 'convertMessage',
 	    value: function convertMessage(message) {
-	      if (isImageUrl(message)) {
-	        return toAscii(message).then(function (converted) {
-	          return '\n' + converted;
-	        });
-	      } else if (this.state.isLeetSpeak) {
+	      if (this.state.isLeetSpeak) {
 	        return Promise.resolve(convertTo1337(message));
 	      }
 
@@ -570,19 +557,6 @@
 	    key: 'emitBigMessage',
 	    value: function emitBigMessage(message) {
 	      return this.emitMessage('\n' + figlet.textSync(message, { horizontalLayout: 'full' }));
-	    }
-	  }, {
-	    key: 'emitImageMessage',
-	    value: function emitImageMessage(url) {
-	      var _this12 = this;
-
-	      return toAscii(url).then(function (converted) {
-	        return '\n' + converted;
-	      }).then(function (msg) {
-	        return _this12.emitMessage(msg);
-	      }).catch(isDev ? function (err) {
-	        return console.log('emitMessage error :', err);
-	      } : noOp);
 	    }
 	  }, {
 	    key: 'emitLogin',
@@ -666,14 +640,13 @@
 	var fs = __webpack_require__(9);
 	var path = __webpack_require__(10);
 	var request = __webpack_require__(11);
-	var imageToAscii = __webpack_require__(12);
-	var emojis = __webpack_require__(13);
+	var emojis = __webpack_require__(12);
 
-	var _require = __webpack_require__(14),
+	var _require = __webpack_require__(13),
 	    isImageUrl = _require.isImageUrl,
 	    extractImageFullName = _require.extractImageFullName;
 
-	var _require2 = __webpack_require__(15),
+	var _require2 = __webpack_require__(14),
 	    downloadsFolderPath = _require2.downloadsFolderPath,
 	    createDownloadFolderIfDoesntExist = _require2.createDownloadFolderIfDoesntExist;
 
@@ -701,14 +674,6 @@
 	  });
 	};
 
-	var toAscii = function toAscii(url) {
-	  return fileExists(url).then(function (f) {
-	    return f;
-	  }, downloadImage).then(function (filePath) {
-	    return imageToAscii(filePath, { fit: 'box', height: 40 });
-	  });
-	};
-
 	var parseEmojis = function parseEmojis(str) {
 	  return str.split(' ').map(function (x) {
 	    return emojis[x] || x;
@@ -726,7 +691,6 @@
 	var heart = '\n\n            ******       ******\n          **********   **********\n        ************* *************\n       *****************************\n       *****************************\n       *****************************\n        ***************************\n          ***********************\n            *******************\n              ***************\n                ***********\n                  *******\n                    ***\n                     *\n\n';
 
 	module.exports = {
-	  toAscii: toAscii,
 	  parseEmojis: parseEmojis,
 	  asciiImage: {
 	    thumbUp: thumbUp,
@@ -757,12 +721,6 @@
 
 /***/ },
 /* 12 */
-/***/ function(module, exports) {
-
-	module.exports = require("asciify-image");
-
-/***/ },
-/* 13 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -1072,7 +1030,7 @@
 	};
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1116,7 +1074,7 @@
 	};
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1137,7 +1095,7 @@
 	};
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1153,7 +1111,7 @@
 	};
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1161,7 +1119,7 @@
 	module.exports.noOp = function () {};
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1171,19 +1129,19 @@
 	var _require = __webpack_require__(6),
 	    flatMap = _require.flatMap;
 
-	var _require2 = __webpack_require__(19),
+	var _require2 = __webpack_require__(18),
 	    Spinner = _require2.Spinner;
 
-	var inquirer = __webpack_require__(20);
-	var Cursor = __webpack_require__(21);
-	var chalk = __webpack_require__(22);
+	var inquirer = __webpack_require__(19);
+	var Cursor = __webpack_require__(20);
+	var chalk = __webpack_require__(21);
 	var figlet = __webpack_require__(5);
-	var clear = __webpack_require__(23);
+	var clear = __webpack_require__(22);
 
-	var _require3 = __webpack_require__(16),
+	var _require3 = __webpack_require__(15),
 	    wait = _require3.wait;
 
-	var _require4 = __webpack_require__(24),
+	var _require4 = __webpack_require__(23),
 	    formatTime = _require4.formatTime;
 
 	var _require5 = __webpack_require__(8),
@@ -1273,9 +1231,9 @@
 	// message : { username : String, message : String } -> Promise
 	var message = function message(_ref2) {
 	  var username = _ref2.username,
-	      message = _ref2.message,
+	      _message = _ref2.message,
 	      createdAt = _ref2.createdAt;
-	  return log.apply(undefined, _toConsumableArray(formatDate(createdAt)).concat(_toConsumableArray(formatUsername(username)), [chalk.cyan(message)]));
+	  return log.apply(undefined, _toConsumableArray(formatDate(createdAt)).concat(_toConsumableArray(formatUsername(username)), [chalk.cyan(_message)]));
 	};
 
 	// myMessage : { username : String, message : String } -> Promise
@@ -1483,37 +1441,37 @@
 	};
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports = require("clui");
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports) {
 
 	module.exports = require("inquirer");
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports) {
 
 	module.exports = require("terminal-cursor");
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports) {
 
 	module.exports = require("chalk");
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports) {
 
 	module.exports = require("clear");
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1534,18 +1492,18 @@
 	};
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var _require = __webpack_require__(26),
+	var _require = __webpack_require__(25),
 	    NotificationCenter = _require.NotificationCenter;
 
 	var path = __webpack_require__(10);
-	var open = __webpack_require__(27);
+	var open = __webpack_require__(26);
 
-	var _require2 = __webpack_require__(14),
+	var _require2 = __webpack_require__(13),
 	    containsUrl = _require2.containsUrl,
 	    extractUrl = _require2.extractUrl;
 
@@ -1611,25 +1569,25 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = require("node-notifier");
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = require("open");
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var Player = __webpack_require__(29);
-	var Say = __webpack_require__(30);
+	var Player = __webpack_require__(28);
+	var Say = __webpack_require__(29);
 
 	/* ----------------------------------------- *
 	        Private
@@ -1666,19 +1624,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = require("play-sound");
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = require("say");
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1712,18 +1670,18 @@
 	module.exports = State;
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports = require("latest-version");
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports = {
 		"name": "ch4t",
-		"version": "1.0.21",
+		"version": "1.0.22",
 		"description": "Chat with your hacker friends inside the terminal.",
 		"main": "src/index.js",
 		"scripts": {
@@ -1740,7 +1698,6 @@
 		"author": "Simon Corompt, Gabriel Vergnaud",
 		"license": "ISC",
 		"dependencies": {
-			"asciify-image": "0.0.8",
 			"axios": "^0.15.3",
 			"chalk": "^1.1.3",
 			"clear": "0.0.1",

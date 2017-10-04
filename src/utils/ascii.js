@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const request = require('request')
-const imageToAscii = require('asciify-image')
 const emojis = require('../assets/data/emojis.json')
 const { isImageUrl, extractImageFullName } = require('./url')
 const { downloadsFolderPath, createDownloadFolderIfDoesntExist } = require('./files')
@@ -25,11 +24,6 @@ const downloadImage = url => new Promise((resolve, reject) => {
     resolve(filePath)
   })
 })
-
-const toAscii = url =>
-  fileExists(url)
-    .then(f => f, downloadImage)
-    .then(filePath => imageToAscii(filePath, { fit: 'box', height: 40 }))
 
 const parseEmojis = str => str.split(' ').map(x => emojis[x] || x).join(' ')
 
@@ -151,7 +145,6 @@ const heart = `
 
 
 module.exports = {
-  toAscii,
   parseEmojis,
   asciiImage: {
     thumbUp,
